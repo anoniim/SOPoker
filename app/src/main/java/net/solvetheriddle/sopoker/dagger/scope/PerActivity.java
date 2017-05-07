@@ -1,4 +1,4 @@
-package net.solvetheriddle.sopoker.util;
+package net.solvetheriddle.sopoker.dagger.scope;
 
 
 import java.lang.annotation.Documented;
@@ -10,5 +10,5 @@ import javax.inject.Scope;
 @Documented
 @Scope
 @Retention(RetentionPolicy.RUNTIME)
-public @interface CustomScope {
+public @interface PerActivity {
 }

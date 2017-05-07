@@ -2,30 +2,28 @@ package net.solvetheriddle.sopoker;
 
 import android.app.Application;
 
-import net.solvetheriddle.sopoker.data.component.DaggerPokeScreenComponent;
-import net.solvetheriddle.sopoker.data.component.NetComponent;
-import net.solvetheriddle.sopoker.data.component.PokeScreenComponent;
-import net.solvetheriddle.sopoker.data.module.AppModule;
-import net.solvetheriddle.sopoker.data.module.NetModule;
-import net.solvetheriddle.sopoker.data.module.PokeScreenModule;
+import net.solvetheriddle.sopoker.dagger.component.AppComponent;
+import net.solvetheriddle.sopoker.dagger.component.DaggerAppComponent;
+import net.solvetheriddle.sopoker.dagger.module.AppModule;
+import net.solvetheriddle.sopoker.dagger.module.NetModule;
 
 
 public class SoPokerApp extends Application {
 
-    PokeScreenComponent mAppComponent;
+    AppComponent mAppComponent;
 
     @Override
     public void onCreate() {
         super.onCreate();
 
-        mAppComponent = DaggerPokeScreenComponent.builder()
+        mAppComponent = DaggerAppComponent.builder()
                 .appModule(new AppModule(this))
-                .pokeScreenModule(new PokeScreenModule())
                 .netModule(new NetModule("https://api.stackexchange.com/2.2/"))
                 .build();
+        mAppComponent.inject(this);
     }
 
-    public PokeScreenComponent getAppComponent() {
+    public AppComponent getAppComponent() {
         return mAppComponent;
     }
 }

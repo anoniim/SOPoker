@@ -1,4 +1,4 @@
-package net.solvetheriddle.sopoker.data.module;
+package net.solvetheriddle.sopoker.dagger.module;
 
 
 import android.app.Application;
@@ -21,7 +21,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
 @Module
 public class NetModule {
 
-    String mBaseUrl;
+    private final String mBaseUrl;
 
     public NetModule(final String baseUrl) {
         mBaseUrl = baseUrl;

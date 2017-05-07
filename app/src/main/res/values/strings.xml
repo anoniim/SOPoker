@@ -1,4 +1,15 @@
 <resources>
     <string name="app_name">SO Poker</string>
     <string name="action_settings">Settings</string>
+    <string name="title_text">StackOverflow Poker</string>
+
+    <!-- Login -->
+    <string name="login_button">Login to StackOverflow</string>
+    <string name="login_log_open_auth_dialog">…opening authentication dialog</string>
+    <string name="login_log_close_auth_dialog">…authentication finished</string>
+    <string name="login_log_logged_in">…logged in as \'%s\'</string>
+    <string name="login_log_error">…error: %s</string>
+    <string name="login_log_getting_profile">…getting your profile</string>
+    <string name="login_log_done">…done</string>
+    <string name="login_log_in_progress">…authenticating</string>
 </resources>
