@@ -21,11 +21,10 @@ public class LoginDao {
     private static final String SCOPE = "scope";
     private static final String REDIRECT_URI = "redirect_uri";
     private static final String SO_POKER_CLIENT_ID = "9347"; // TODO Move to build.gradle config
-    private static final String SO_POKER_AUTH_SCOPE = "private_info";
+    private static final String SO_POKER_AUTH_SCOPE = "private_info no_expiry";
     private static final String IMPLICIT_AUTH_URL = "https://stackexchange.com/oauth/dialog";
     private static final String SITE = "stackoverflow";
     private static final String KEY = "2Aiw5tBFMD)xb2TVgS))cg((";
-
 
     private Retrofit mRetrofit;
 

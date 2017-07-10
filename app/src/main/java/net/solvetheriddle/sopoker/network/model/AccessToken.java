@@ -3,6 +3,8 @@ package net.solvetheriddle.sopoker.network.model;
 
 public class AccessToken {
 
+    public static final int NO_EXPIRY = -1;
+
     private final String mAccessToken;
     private final int mExpiry;
 
@@ -17,5 +19,10 @@ public class AccessToken {
 
     public int getExpiry() {
         return mExpiry;
+    }
+
+    @Override
+    public String toString() {
+        return "Access token [" + mAccessToken + ", " +mExpiry + "]";
     }
 }

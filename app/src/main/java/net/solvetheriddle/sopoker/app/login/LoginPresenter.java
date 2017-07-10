@@ -1,6 +1,9 @@
 package net.solvetheriddle.sopoker.app.login;
 
 
+import android.support.annotation.NonNull;
+import android.text.TextUtils;
+
 import net.solvetheriddle.sopoker.R;
 import net.solvetheriddle.sopoker.app.login.data.LoginDao;
 import net.solvetheriddle.sopoker.app.settings.SoPokerPrefs;
@@ -15,15 +18,15 @@ import rx.Observer;
 
 public class LoginPresenter implements LoginScreenContract.Presenter {
 
-    private final Observer<UserResponse> mProfileObserver = new ProfileObserver();
-    private LoginScreenContract.View mView;
-    private SoPokerPrefs mPrefs;
-    private LoginDao mLoginDao;
-    private ResponseParser mResponseParser;
+    @NonNull private final Observer<UserResponse> mProfileObserver = new ProfileObserver();
+    @NonNull private final LoginScreenContract.View mView;
+    @NonNull private final SoPokerPrefs mPrefs;
+    @NonNull private final LoginDao mLoginDao;
+    @NonNull private final ResponseParser mResponseParser;
 
     @Inject
-    LoginPresenter(LoginDao loginDao, ResponseParser responseParser, SoPokerPrefs prefs,
-            LoginScreenContract.View view) {
+    LoginPresenter(@NonNull LoginDao loginDao, @NonNull ResponseParser responseParser, @NonNull SoPokerPrefs prefs,
+            @NonNull LoginScreenContract.View view) {
         mLoginDao = loginDao;
         mResponseParser = responseParser;
         mPrefs = prefs;
@@ -55,10 +58,23 @@ public class LoginPresenter implements LoginScreenContract.Presenter {
         }
     }
 
-    private void getProfile() {
+    public boolean isLoggedIn() {
+        return !TextUtils.isEmpty(mPrefs.getAccessToken());
+    }
+
+    @Override
+    public void getProfile() {
         mView.log(R.string.login_log_getting_profile);
         String accessToken = mPrefs.getAccessToken();
         mLoginDao.getProfile(accessToken, mProfileObserver);
+    }
+
+    @Override
+    public void autoLogin() {
+        if (isLoggedIn()) {
+            mView.log(R.string.login_log_already_logged_in);
+            getProfile();
+        }
     }
 
     private class ProfileObserver implements Observer<UserResponse> {

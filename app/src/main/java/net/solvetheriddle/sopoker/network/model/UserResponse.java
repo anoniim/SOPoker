@@ -10,22 +10,18 @@ import java.util.List;
 
 public class UserResponse implements Parcelable {
 
-    public static final Parcelable.Creator<UserResponse> CREATOR = new Parcelable.Creator<UserResponse>() {
-        @Override
-        public UserResponse createFromParcel(Parcel source) {return new UserResponse(source);}
-
-        @Override
-        public UserResponse[] newArray(int size) {return new UserResponse[size];}
-    };
     @SerializedName("items")
     @Expose
     public List<User> items = null;
+
     @SerializedName("has_more")
     @Expose
     public Boolean hasMore;
+
     @SerializedName("quota_max")
     @Expose
     public Integer quotaMax;
+
     @SerializedName("quota_remaining")
     @Expose
     public Integer quotaRemaining;
@@ -65,4 +61,12 @@ public class UserResponse implements Parcelable {
         dest.writeValue(this.quotaMax);
         dest.writeValue(this.quotaRemaining);
     }
+
+    public static final Parcelable.Creator<UserResponse> CREATOR = new Parcelable.Creator<UserResponse>() {
+        @Override
+        public UserResponse createFromParcel(Parcel source) {return new UserResponse(source);}
+
+        @Override
+        public UserResponse[] newArray(int size) {return new UserResponse[size];}
+    };
 }

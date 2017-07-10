@@ -9,11 +9,16 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.TextView;
 
 import net.solvetheriddle.sopoker.R;
 import net.solvetheriddle.sopoker.SoPokerApp;
+import net.solvetheriddle.sopoker.app.settings.SettingsActivity;
 import net.solvetheriddle.sopoker.dagger.component.DaggerProfileScreenComponent;
 import net.solvetheriddle.sopoker.network.model.User;
+
+import javax.inject.Inject;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -21,22 +26,26 @@ import butterknife.ButterKnife;
 public class ProfileActivity extends AppCompatActivity implements ProfileScreenContract.View {
 
     public static final String PROFILE = "profile";
+
     @BindView(R.id.toolbar) Toolbar mToolbar;
+    @BindView(R.id.username_text) TextView mUsername;
+    @BindView(R.id.poke_fab) View mFab;
+
     @Nullable
     private User mProfile;
+
+    @Inject
+    ProfilePresenter mProfilePresenter;
 
     public static Intent getCallingIntent(Context context, final User profile) {
         Intent intent = new Intent(context, ProfileActivity.class);
         intent.putExtra(ProfileActivity.PROFILE, profile);
         return intent;
     }
-//    @BindView(R.id.poke_fab) FloatingActionButton mFab;
 
     @Override
     public void onCreate(@Nullable final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_profile);
-        ButterKnife.bind(this);
 
         SoPokerApp application = (SoPokerApp) getApplication();
         DaggerProfileScreenComponent.builder()
@@ -44,11 +53,26 @@ public class ProfileActivity extends AppCompatActivity implements ProfileScreenC
                 .build()
                 .inject(this);
 
+        setContentView(R.layout.activity_profile);
+        ButterKnife.bind(this);
         setSupportActionBar(mToolbar);
 
-        mProfile = getIntent().getParcelableExtra(PROFILE);
+        mProfile = getProfile();
 
-//        mFab.setOnClickListener(view -> mLoginPresenter.poke());
+
+
+        showProfile(mProfile);
+
+        mFab.setOnClickListener(view -> mProfilePresenter.schedulePoking());
+    }
+
+    @Nullable
+    User getProfile() {
+        if (getIntent() != null && getIntent().getExtras().containsKey(PROFILE)) {
+            return getIntent().getParcelableExtra(PROFILE);
+        } else {
+            return null;
+        }
     }
 
     @Override
@@ -63,6 +87,7 @@ public class ProfileActivity extends AppCompatActivity implements ProfileScreenC
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
+            startActivity(SettingsActivity.getCallingIntent(this));
             return true;
         }
 
@@ -71,6 +96,7 @@ public class ProfileActivity extends AppCompatActivity implements ProfileScreenC
 
     @Override
     public void showProfile(final User profile) {
+        mUsername.setText(profile.getDisplayName());
         // TODO
     }
 }

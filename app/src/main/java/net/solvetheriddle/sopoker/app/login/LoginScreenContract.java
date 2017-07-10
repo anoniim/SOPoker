@@ -21,5 +21,7 @@ public interface LoginScreenContract {
     interface Presenter {
         void login();
         void parseAccessToken(@Nullable String url);
+        void getProfile();
+        void autoLogin();
     }
 }

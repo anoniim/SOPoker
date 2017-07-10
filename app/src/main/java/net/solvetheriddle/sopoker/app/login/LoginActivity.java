@@ -24,7 +24,7 @@ import butterknife.ButterKnife;
 
 public class LoginActivity extends AppCompatActivity implements LoginScreenContract.View {
 
-    public static final int REDIRECT_DELAY = 1000;
+    public static final int REDIRECT_DELAY = 2000;
 
     @BindView(R.id.login_button) Button mLoginButton;
     @BindView(R.id.login_log) TextView mLoginLog;
@@ -36,8 +36,6 @@ public class LoginActivity extends AppCompatActivity implements LoginScreenContr
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_login);
-        ButterKnife.bind(this);
 
         SoPokerApp application = (SoPokerApp) getApplication();
         DaggerLoginScreenComponent.builder()
@@ -46,7 +44,12 @@ public class LoginActivity extends AppCompatActivity implements LoginScreenContr
                 .build()
                 .inject(this);
 
+        setContentView(R.layout.activity_login);
+        ButterKnife.bind(this);
+
         initLoginButton();
+
+        mLoginPresenter.autoLogin();
     }
 
     private void initLoginButton() {
@@ -101,7 +104,14 @@ public class LoginActivity extends AppCompatActivity implements LoginScreenContr
     public void redirectToProfile(final User profile) {
         log(R.string.login_log_done);
         // TODO Rx for the delay?
-        new Handler().postDelayed(() -> startActivity(ProfileActivity.getCallingIntent(this, profile)), REDIRECT_DELAY);
+        new Handler().postDelayed(() -> {
+            finishAndGoToProfile(profile);
+        }, REDIRECT_DELAY);
+    }
+
+    void finishAndGoToProfile(final User profile) {
+        startActivity(ProfileActivity.getCallingIntent(this, profile));
+        finish();
     }
 
     @Override

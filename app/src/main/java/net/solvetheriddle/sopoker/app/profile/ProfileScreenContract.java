@@ -10,6 +10,6 @@ public interface ProfileScreenContract {
     }
 
     interface Presenter {
-
+        void schedulePoking();
     }
 }

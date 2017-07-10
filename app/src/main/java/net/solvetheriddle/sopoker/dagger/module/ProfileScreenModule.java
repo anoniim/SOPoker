@@ -2,6 +2,7 @@ package net.solvetheriddle.sopoker.dagger.module;
 
 import android.content.Context;
 
+import net.solvetheriddle.sopoker.app.profile.PokeScheduler;
 import net.solvetheriddle.sopoker.app.profile.ProfileActivity;
 import net.solvetheriddle.sopoker.app.profile.ProfileScreenContract;
 
@@ -22,6 +23,11 @@ public class ProfileScreenModule {
     @Provides
     ProfileScreenContract.View provideLoginScreenContractView() {
         return mProfileActivity;
+    }
+
+    @Provides
+    PokeScheduler providePokeScheduler() {
+        return new PokeScheduler(mProfileActivity);
     }
 
     @Provides

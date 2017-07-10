@@ -3,6 +3,7 @@ package net.solvetheriddle.sopoker.app.settings;
 
 import android.content.SharedPreferences;
 import android.support.annotation.Nullable;
+import android.util.Log;
 
 import net.solvetheriddle.sopoker.network.model.AccessToken;
 
@@ -18,9 +19,10 @@ public class SoPokerPrefs {
     }
 
     public void storeAccessToken(final AccessToken accessToken) {
+        Log.i(SoPokerPrefs.class.getCanonicalName(), "Storing " + accessToken);
         mSharedPreferences.edit()
                 .putString(AUTH_TOKEN, accessToken.getAccessToken())
-                .putInt(AUTH_TOKEN_EXPIRY, accessToken.getExpiry())
+                .putInt(AUTH_TOKEN_EXPIRY, accessToken.getExpiry()) // TODO System.currentTimeMillis() +
                 .apply();
     }
 

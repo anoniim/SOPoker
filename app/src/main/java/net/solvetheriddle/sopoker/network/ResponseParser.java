@@ -21,7 +21,7 @@ public class ResponseParser {
             if (parameters.length > 0) {
                 String accessToken = getParameterValue(parameters[0]);
                 if (!TextUtils.isEmpty(accessToken)) {
-                    int expiry = Integer.valueOf(getParameterValue(parameters[1]));
+                    int expiry = getExpiry(parameters);
                     return new AccessToken(accessToken, expiry);
                 }
             }
@@ -29,9 +29,22 @@ public class ResponseParser {
         return null;
     }
 
+    private int getExpiry(@NonNull final String[] accessTokenParameters) {
+        int expiry = AccessToken.NO_EXPIRY;
+        if (accessTokenParameters.length > 1) {
+            expiry = Integer.valueOf(getParameterValue(accessTokenParameters[1]));
+        }
+        return expiry;
+    }
+
+    @NonNull
     private String getParameterValue(@NonNull final String keyValue) {
+        if (TextUtils.isEmpty(keyValue)) {
 //        return keyValue.split("=")[1];
-        return keyValue.substring(keyValue.indexOf("=") + 1);
+            return keyValue.substring(keyValue.indexOf("=") + 1);
+        } else {
+            return "";
+        }
     }
 
     @Nullable

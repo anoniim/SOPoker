@@ -2,12 +2,12 @@ apply plugin: 'com.android.application'
 
 android {
 
-    compileSdkVersion 25
-    buildToolsVersion "25.0.2"
+    compileSdkVersion 26
+    buildToolsVersion "25.0.3"
 
     defaultConfig {
         minSdkVersion 21
-        targetSdkVersion 25
+        targetSdkVersion 26
         versionCode 1
         versionName "1.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
@@ -18,17 +18,17 @@ android {
             }
         }
 
+        flavorDimensions "release"
+
         productFlavors {
             internal {
+                dimension "release"
                 applicationId 'net.solvetheriddle.sopoker.internal'
             }
             production {
+                dimension "release"
                 applicationId 'net.solvetheriddle.sopoker'
             }
-        }
-
-        jackOptions {
-            enabled true
         }
     }
 
@@ -69,17 +69,16 @@ dependencies {
     // Support
     compile "com.android.support:appcompat-v7:$supportLibVersion"
     compile "com.android.support:design:$supportLibVersion"
-    compile "com.android.support.constraint:constraint-layout:1.0.2"
+    compile "com.android.support:support-v4:$supportLibVersion"
+    compile 'com.android.support.constraint:constraint-layout:1.0.2'
 
     // Dagger 2
     compile "com.google.dagger:dagger:$dagger2Version"
     annotationProcessor "com.google.dagger:dagger-compiler:$dagger2Version"
-    provided "javax.annotation:jsr250-api:1.0"
 
     // OkHttp
     compile "com.squareup.okhttp3:okhttp:$okhttp3Version"
     compile "com.squareup.okhttp3:logging-interceptor:$okhttp3Version"
-    compile "com.squareup.okio:okio:1.11.0"
 
     // Retrofit
     compile "com.squareup.retrofit2:retrofit:$retrofit2Version"
@@ -89,19 +88,20 @@ dependencies {
     internalDebugCompile "com.squareup.retrofit2:retrofit-mock:$retrofit2Version"
 
     // Gson
-    compile "com.google.code.gson:gson:2.7"
+    compile 'com.google.code.gson:gson:2.8.0'
 
-    // RxJava
-    compile "io.reactivex:rxjava:1.2.4"
-    compile "io.reactivex:rxandroid:1.2.1"
+    // Rx
+    compile 'io.reactivex:rxjava:1.2.4'
+    compile 'io.reactivex:rxandroid:1.2.1'
 
     // Butter Knife
     compile "com.jakewharton:butterknife:$butterKnifeVersion"
     annotationProcessor "com.jakewharton:butterknife-compiler:$butterKnifeVersion"
 
-    compile "com.squareup.moshi:moshi:1.4.0"
-    compile "com.squareup.picasso:picasso:2.5.2"
-    compile "com.jakewharton.picasso:picasso2-okhttp3-downloader:1.1.0"
-
-    testCompile "junit:junit:4.12"
+    compile 'com.squareup.okio:okio:1.11.0'
+    compile 'com.squareup.moshi:moshi:1.4.0'
+    compile 'com.squareup.picasso:picasso:2.5.2'
+    compile 'com.jakewharton.picasso:picasso2-okhttp3-downloader:1.1.0'
+    testCompile 'junit:junit:4.12'
+    provided 'javax.annotation:jsr250-api:1.0'
 }
