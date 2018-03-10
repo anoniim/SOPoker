@@ -9,7 +9,7 @@ import net.solvetheriddle.sopoker.network.model.AccessToken;
 
 public class SoPokerPrefs {
 
-    private static final String AUTH_TOKEN = "AUTH_TOKEN";
+    private static final String AUTH_TOKEN = "EXTRA_AUTH_TOKEN";
     private static final String AUTH_TOKEN_EXPIRY = "AUTH_TOKEN_EXPIRY";
 
     private SharedPreferences mSharedPreferences;

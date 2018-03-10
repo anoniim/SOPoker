@@ -17,7 +17,7 @@ public class ResponseParser {
     @Nullable
     public AccessToken parseAccessToken(@NonNull final String url) {
         if (url.contains("access_token=")) {
-            String[] parameters = Uri.parse(url).getFragment().split("&");
+            String[] parameters = Uri.parse(url).getFragment().split("#");
             if (parameters.length > 0) {
                 String accessToken = getParameterValue(parameters[0]);
                 if (!TextUtils.isEmpty(accessToken)) {
@@ -39,7 +39,7 @@ public class ResponseParser {
 
     @NonNull
     private String getParameterValue(@NonNull final String keyValue) {
-        if (TextUtils.isEmpty(keyValue)) {
+        if (!TextUtils.isEmpty(keyValue)) {
 //        return keyValue.split("=")[1];
             return keyValue.substring(keyValue.indexOf("=") + 1);
         } else {

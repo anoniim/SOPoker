@@ -16,29 +16,29 @@ import dagger.Provides;
 @Module
 public class AppModule {
 
-    private final Application mApplication;
-
-    public AppModule(final Application application) {
-        mApplication = application;
-    }
+//    private final Application mApplication;
+//
+//    public AppModule(final Application application) {
+//        mApplication = application;
+//    }
 
     @Provides
     @Singleton
     @Named("application")
-    Context provideContext() {
-        return mApplication;
+    Context provideContext(Application application) {
+        return application;
     }
+//
+//    @Provides
+//    @Singleton
+//    Application provideApplication() {
+//        return mApplication;
+//    }
+
 
     @Provides
     @Singleton
-    Application provideApplication() {
-        return mApplication;
-    }
-
-
-    @Provides
-    @Singleton
-    SoPokerPrefs provideSoPokerPrefs() {
-        return new SoPokerPrefs(PreferenceManager.getDefaultSharedPreferences(mApplication));
+    SoPokerPrefs provideSoPokerPrefs(Application application) {
+        return new SoPokerPrefs(PreferenceManager.getDefaultSharedPreferences(application));
     }
 }

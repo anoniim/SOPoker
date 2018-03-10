@@ -14,18 +14,17 @@ import rx.schedulers.Schedulers;
 
 public class LoginDao {
 
-    //    private static final String API_OAUTH_REDIRECT = "http://sopoker.solvetheriddle.net";
-    private static final String API_OAUTH_REDIRECT = "https://stackexchange.com/oauth/login_success";
-    private static final String EXPLICIT_AUTH_URL = "http://sopoker.solvetheriddle.net";
+    public static final String API_OAUTH_REDIRECT = "https://sopoker.solvetheriddle.net";
+    //    private static final String API_OAUTH_REDIRECT = "https://stackexchange.com/oauth/login_success";
+    public static final String EXPLICIT_AUTH_URL = "http://sopoker.solvetheriddle.net";
+    public static final String SO_POKER_CLIENT_ID = "9347"; // TODO Move to build.gradle config
+    public static final String SO_POKER_AUTH_SCOPE = "private_info no_expiry";
+    public static final String IMPLICIT_AUTH_URL = "https://stackexchange.com/oauth/dialog";
+    public static final String API_KEY = "2Aiw5tBFMD)xb2TVgS))cg((";
     private static final String CLIENT_ID = "client_id";
     private static final String SCOPE = "scope";
     private static final String REDIRECT_URI = "redirect_uri";
-    private static final String SO_POKER_CLIENT_ID = "9347"; // TODO Move to build.gradle config
-    private static final String SO_POKER_AUTH_SCOPE = "private_info no_expiry";
-    private static final String IMPLICIT_AUTH_URL = "https://stackexchange.com/oauth/dialog";
     private static final String SITE = "stackoverflow";
-    private static final String KEY = "2Aiw5tBFMD)xb2TVgS))cg((";
-
     private Retrofit mRetrofit;
 
     public LoginDao(final Retrofit retrofit) {
@@ -35,7 +34,7 @@ public class LoginDao {
     public void getProfile(final String accessToken, final Observer<? super UserResponse> profileObserver) {
         if (!TextUtils.isEmpty(accessToken)) {
             getStackExchangeService()
-                    .getProfile(accessToken, KEY, SITE)
+                    .getProfile(accessToken, API_KEY, SITE)
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
                     .unsubscribeOn(Schedulers.io())

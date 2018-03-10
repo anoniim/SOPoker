@@ -19,11 +19,11 @@ import retrofit2.adapter.rxjava.RxJavaCallAdapterFactory;
 import retrofit2.converter.gson.GsonConverterFactory;
 
 @Module
-public class NetModule {
+public class NetworkModule {
 
     private final String mBaseUrl;
 
-    public NetModule(final String baseUrl) {
+    public NetworkModule(final String baseUrl) {
         mBaseUrl = baseUrl;
     }
 
@@ -44,19 +44,19 @@ public class NetModule {
 
     @Provides
     @Singleton
-    Gson provideGson() {
-        GsonBuilder gsonBuilder = new GsonBuilder();
-        gsonBuilder.setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES);
-        return gsonBuilder.create();
-    }
-
-    @Provides
-    @Singleton
     OkHttpClient provideOkHttpClient(Cache cache, HttpLoggingInterceptor loggingInterceptor) {
         OkHttpClient.Builder client = new OkHttpClient.Builder();
         return client.cache(cache)
                 .addInterceptor(loggingInterceptor)
                 .build();
+    }
+
+    @Provides
+    @Singleton
+    Gson provideGson() {
+        GsonBuilder gsonBuilder = new GsonBuilder();
+        gsonBuilder.setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES);
+        return gsonBuilder.create();
     }
 
     @Provides

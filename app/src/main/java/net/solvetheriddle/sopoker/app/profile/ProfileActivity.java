@@ -16,6 +16,7 @@ import net.solvetheriddle.sopoker.R;
 import net.solvetheriddle.sopoker.SoPokerApp;
 import net.solvetheriddle.sopoker.app.settings.SettingsActivity;
 import net.solvetheriddle.sopoker.dagger.component.DaggerProfileScreenComponent;
+import net.solvetheriddle.sopoker.dagger.module.ProfileScreenModule;
 import net.solvetheriddle.sopoker.network.model.User;
 
 import javax.inject.Inject;
@@ -30,12 +31,10 @@ public class ProfileActivity extends AppCompatActivity implements ProfileScreenC
     @BindView(R.id.toolbar) Toolbar mToolbar;
     @BindView(R.id.username_text) TextView mUsername;
     @BindView(R.id.poke_fab) View mFab;
-
-    @Nullable
-    private User mProfile;
-
     @Inject
     ProfilePresenter mProfilePresenter;
+    @Nullable
+    private User mProfile;
 
     public static Intent getCallingIntent(Context context, final User profile) {
         Intent intent = new Intent(context, ProfileActivity.class);
@@ -50,6 +49,7 @@ public class ProfileActivity extends AppCompatActivity implements ProfileScreenC
         SoPokerApp application = (SoPokerApp) getApplication();
         DaggerProfileScreenComponent.builder()
                 .appComponent(application.getAppComponent())
+                .profileScreenModule(new ProfileScreenModule(this))
                 .build()
                 .inject(this);
 

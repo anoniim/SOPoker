@@ -36,26 +36,7 @@ public class LoginPresenter implements LoginScreenContract.Presenter {
     @Override
     public void login() {
         String loginUrl = mLoginDao.getLoginUri().toString();
-        mView.openAuthDialog(loginUrl);
-    }
-
-    @Override
-    public void parseAccessToken(final String url) { // TODO Rx from WebView to Presenter?
-        if (url != null) {
-            AccessToken accessToken = mResponseParser.parseAccessToken(url);
-            if (accessToken != null) {
-                mPrefs.storeAccessToken(accessToken);
-                mView.closeAuthDialog();
-
-                // TODO Rx to chain events?
-                getProfile();
-            } else {
-                // URL does not contain access token
-                mView.log(R.string.login_log_in_progress);
-            }
-        } else {
-            mView.showError("Failed to parse access token from URL");
-        }
+        mView.startAuthentication(loginUrl);
     }
 
     public boolean isLoggedIn() {
@@ -75,6 +56,11 @@ public class LoginPresenter implements LoginScreenContract.Presenter {
             mView.log(R.string.login_log_already_logged_in);
             getProfile();
         }
+    }
+
+    @Override
+    public void authenticationSuccessful(final AccessToken accessToken) {
+        mPrefs.storeAccessToken(accessToken);
     }
 
     private class ProfileObserver implements Observer<UserResponse> {

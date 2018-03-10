@@ -4,8 +4,7 @@ import android.app.Application;
 
 import net.solvetheriddle.sopoker.dagger.component.AppComponent;
 import net.solvetheriddle.sopoker.dagger.component.DaggerAppComponent;
-import net.solvetheriddle.sopoker.dagger.module.AppModule;
-import net.solvetheriddle.sopoker.dagger.module.NetModule;
+import net.solvetheriddle.sopoker.dagger.module.NetworkModule;
 
 
 public class SoPokerApp extends Application {
@@ -17,8 +16,8 @@ public class SoPokerApp extends Application {
         super.onCreate();
 
         mAppComponent = DaggerAppComponent.builder()
-                .appModule(new AppModule(this))
-                .netModule(new NetModule("https://api.stackexchange.com/2.2/"))
+                .application(this)
+                .networkModule(new NetworkModule(BuildConfig.BASE_URL))
                 .build();
         mAppComponent.inject(this);
     }
