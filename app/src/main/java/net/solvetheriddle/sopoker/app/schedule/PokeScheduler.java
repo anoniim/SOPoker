@@ -1,4 +1,4 @@
-package net.solvetheriddle.sopoker.app.profile;
+package net.solvetheriddle.sopoker.app.schedule;
 
 
 import android.app.job.JobInfo;
@@ -6,6 +6,10 @@ import android.app.job.JobScheduler;
 import android.content.ComponentName;
 import android.content.Context;
 import android.util.Log;
+
+import java.util.Calendar;
+import java.util.Date;
+import java.util.GregorianCalendar;
 
 public class PokeScheduler {
 
@@ -20,12 +24,23 @@ public class PokeScheduler {
 
     public PokeScheduler(Context context) {
         mContext = context;
-        mServiceComponent = new ComponentName(context, PokeScheduler.class);
+        mServiceComponent = new ComponentName(context, PokeService.class);
     }
 
 
     public void schedule() {
         JobInfo.Builder builder = new JobInfo.Builder(POKE_JOB_ID, mServiceComponent);
+
+        final GregorianCalendar calendar = new GregorianCalendar();
+        calendar.set(Calendar.HOUR_OF_DAY, 12);
+        final Date todaysNoon = calendar.getTime();
+        final Date now = new Date();
+        if (now.after(todaysNoon)) {
+            // TODO run now
+        } else {
+            // TODO run by noon
+        }
+//            scheduleForTomorrow();
 
         builder.setMinimumLatency(DELAY_SEC * 1000);
         builder.setOverrideDeadline(DEADLINE_SEC * 1000);
@@ -53,6 +68,8 @@ public class PokeScheduler {
         // Schedule job
         Log.d(TAG, "Scheduling job");
         JobScheduler tm = (JobScheduler) mContext.getSystemService(Context.JOB_SCHEDULER_SERVICE);
-        tm.schedule(builder.build());
+        if (tm != null) {
+            tm.schedule(builder.build());
+        }
     }
 }

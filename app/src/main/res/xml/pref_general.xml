@@ -30,4 +30,11 @@
         android:positiveButtonText="@null"
         android:title="@string/pref_title_add_friends_to_messages"/>
 
+    <Preference
+        android:title="@string/logout">
+        <intent
+            android:action="net.solvetheriddle.sopoker.LOGOUT"
+            android:launchMode="singleInstance"/>
+    </Preference>
+
 </PreferenceScreen>

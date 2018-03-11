@@ -6,7 +6,6 @@ import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.StringRes;
-import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.widget.Button;
@@ -29,16 +28,12 @@ public class LoginActivity extends AppCompatActivity implements LoginScreenContr
 
     public static final int REDIRECT_DELAY = 2000;
     public static final int REQUEST_AUTHENTICATE = 100;
-    private static final String SHARED_PREFERENCES_NAME = "AuthStatePreference";
-    private static final String AUTH_STATE = "AUTH_STATE";
-    private static final String USED_INTENT = "USED_INTENT";
     private static final String TAG = LoginActivity.class.getCanonicalName();
+
     @BindView(R.id.login_button) Button mLoginButton;
     @BindView(R.id.login_log) TextView mLoginLog;
 
     @Inject LoginPresenter mLoginPresenter;
-
-    private AlertDialog mLoginDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -71,13 +66,24 @@ public class LoginActivity extends AppCompatActivity implements LoginScreenContr
             final AccessToken accessToken = data
                     .getParcelableExtra(AuthenticationActivity.EXTRA_AUTH_TOKEN);
             mLoginPresenter.authenticationSuccessful(accessToken);
+        } else {
+            mLoginButton.setEnabled(true);
         }
     }
 
     @Override
     protected void onStart() {
         super.onStart();
-        mLoginPresenter.autoLogin();
+        if (isLoggingOut()) {
+            mLoginPresenter.logout();
+        } else {
+            mLoginPresenter.autoLogin();
+        }
+    }
+
+    private boolean isLoggingOut() {
+        final String action = getIntent().getAction();
+        return action != null && action.equals("net.solvetheriddle.sopoker.LOGOUT");
     }
 
     @Override
@@ -88,12 +94,11 @@ public class LoginActivity extends AppCompatActivity implements LoginScreenContr
 
     @Override
     protected void onDestroy() {
-        mLoginDialog = null;
         super.onDestroy();
     }
 
     @Override
-    public void startAuthentication(@NonNull String loginUrl) {
+    public void openAuthenticationActivity(@NonNull String loginUrl) {
         log(R.string.login_log_open_auth_dialog);
 
         startActivityForResult(AuthenticationActivity.getStartingIntent(this, loginUrl),
@@ -120,14 +125,22 @@ public class LoginActivity extends AppCompatActivity implements LoginScreenContr
         }, REDIRECT_DELAY);
     }
 
+    @Override
+    public void clearBackStack() {
+        final Intent clearBackStackIntent = new Intent(this, LoginActivity.class);
+        clearBackStackIntent
+                .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        startActivity(clearBackStackIntent);
+    }
+
     void finishAndGoToProfile(final User profile) {
         startActivity(ProfileActivity.getCallingIntent(this, profile));
         finish();
     }
 
     @Override
-    public void log(@StringRes final int log) {
-        log(getString(log));
+    public void log(@StringRes final int logResId) {
+        log(getString(logResId));
     }
 
     private void log(String line) {

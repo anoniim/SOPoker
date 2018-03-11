@@ -30,4 +30,8 @@ public class SoPokerPrefs {
     public String getAccessToken() {
         return mSharedPreferences.getString(AUTH_TOKEN, null);
     }
+
+    public void clear() {
+        mSharedPreferences.edit().clear().apply();
+    }
 }

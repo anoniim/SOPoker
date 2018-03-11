@@ -16,27 +16,12 @@
         <activity
             android:name=".app.login.LoginActivity"
             android:label="@string/app_name"
-            android:launchMode="singleInstance"
+            android:launchMode="singleTop"
             android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
-                <action android:name="android.intent.action.MAIN"/>
-
-                <category android:name="android.intent.category.LAUNCHER"/>
-            </intent-filter>
-            <intent-filter>
-                <action android:name="net.solvetheriddle.sopoker.HANDLE_AUTHORIZATION_RESPONSE"/>
+                <action android:name="net.solvetheriddle.sopoker.LOGOUT"/>
                 <category android:name="android.intent.category.DEFAULT"/>
             </intent-filter>
-            <!--<intent-filter>-->
-            <!--<data-->
-            <!--android:host="stackexchange.com/oauth/login_success"-->
-            <!--android:scheme="https"/>-->
-
-            <!--<action android:name="android.intent.action.VIEW"/>-->
-
-            <!--<category android:name="android.intent.category.DEFAULT"/>-->
-            <!--<category android:name="android.intent.category.BROWSABLE"/>-->
-            <!--</intent-filter>-->
         </activity>
 
         <activity android:name=".app.login.AuthenticationActivity">
@@ -60,6 +45,11 @@
             android:label="@string/app_name"
             android:launchMode="singleInstance"
             android:theme="@style/AppTheme.NoActionBar">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN"/>
+
+                <category android:name="android.intent.category.LAUNCHER"/>
+            </intent-filter>
         </activity>
         <activity
             android:name=".app.settings.SettingsActivity"
@@ -69,6 +59,11 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="net.solvetheriddle.sopoker.app.profile.ProfileActivity"/>
         </activity>
+
+        <service
+            android:name=".app.schedule.PokeService"
+            android:exported="true"
+            android:permission="android.permission.BIND_JOB_SERVICE"/>
     </application>
 
 </manifest>

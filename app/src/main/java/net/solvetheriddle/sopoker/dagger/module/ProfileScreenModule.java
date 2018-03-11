@@ -2,9 +2,9 @@ package net.solvetheriddle.sopoker.dagger.module;
 
 import android.content.Context;
 
-import net.solvetheriddle.sopoker.app.profile.PokeScheduler;
 import net.solvetheriddle.sopoker.app.profile.ProfileActivity;
 import net.solvetheriddle.sopoker.app.profile.ProfileScreenContract;
+import net.solvetheriddle.sopoker.app.schedule.PokeScheduler;
 
 import javax.inject.Named;
 

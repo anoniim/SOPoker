@@ -11,11 +11,12 @@ import net.solvetheriddle.sopoker.network.model.User;
 public interface LoginScreenContract {
 
     interface View {
-        void startAuthentication(@NonNull String loginUrl);
+        void openAuthenticationActivity(@NonNull String loginUrl);
         void showError(@Nullable String message);
         void logProfile(@Nullable User response);
         void log(@StringRes int log);
         void redirectToProfile(final User profile);
+        void clearBackStack();
     }
 
     interface Presenter {
@@ -23,5 +24,6 @@ public interface LoginScreenContract {
         void getProfile();
         void autoLogin();
         void authenticationSuccessful(AccessToken accessToken);
+        void logout();
     }
 }
