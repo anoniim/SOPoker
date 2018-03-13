@@ -8,11 +8,17 @@ import net.solvetheriddle.sopoker.SoPokerApp;
 import net.solvetheriddle.sopoker.app.profile.data.ProfileDao;
 import net.solvetheriddle.sopoker.dagger.component.DaggerPokeServiceComponent;
 import net.solvetheriddle.sopoker.dagger.module.PokeServiceModule;
-import net.solvetheriddle.sopoker.network.model.UserResponse;
+import net.solvetheriddle.sopoker.network.model.User;
+
+import java.util.Calendar;
+import java.util.Date;
+import java.util.GregorianCalendar;
 
 import javax.inject.Inject;
 
 import rx.Observer;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.schedulers.Schedulers;
 
 
 public class PokeService extends JobService {
@@ -37,22 +43,32 @@ public class PokeService extends JobService {
     @Override
     public boolean onStartJob(final JobParameters params) {
         Log.wtf("Marcel", "onStartJob");
-        mProfileDao.getProfile(new Observer<UserResponse>() {
-            @Override
-            public void onCompleted() {
-                Log.wtf("Marcel", "AND THAT's IT");
-            }
+        mProfileDao.getProfile()
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Observer<User>() {
+                    @Override
+                    public void onCompleted() {
+                        Log.wtf("Marcel", "AND THAT's IT");
+                    }
 
-            @Override
-            public void onError(final Throwable e) {
-                Log.wtf("Marcel", "NOPE", e);
-            }
+                    @Override
+                    public void onError(final Throwable e) {
+                        Log.wtf("Marcel", "NOPE", e);
+                    }
 
-            @Override
-            public void onNext(final UserResponse userResponse) {
-                Log.wtf("Marcel", "YEAH");
-            }
-        });
+                    @Override
+                    public void onNext(final User userResponse) {
+                        Log.wtf("Marcel", "YEAH");
+                        final Date now = new Date();
+                        final Calendar calendar = new GregorianCalendar();
+                        calendar.setTime(now);
+                        calendar.roll(Calendar.MINUTE, 30);
+
+                        Log.i(TAG, "JOB TRIGGERED at " + now);
+                        Log.i(TAG, ".. next one should come up at " + calendar.getTime());
+                    }
+                });
         return true;
     }
 

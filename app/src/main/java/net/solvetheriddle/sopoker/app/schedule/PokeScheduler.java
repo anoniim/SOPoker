@@ -16,8 +16,11 @@ public class PokeScheduler {
     private static final String TAG = PokeScheduler.class.getCanonicalName();
 
     private static final int POKE_JOB_ID = 46;
-    private static final long DELAY_SEC = 10;
-    private static final int DEADLINE_SEC = 20;
+
+    private static final int THREE_TIMES_A_DAY = 8 * 60 * 60 * 1000;
+    private static final int SIX_HOURS = 6 * 60 * 60 * 1000;
+    private static final int EVERY_30_MINUTES = 30 * 60 * 1000;
+    private static final int TEN_MINUTES = 10 * 60 * 1000;
 
     private Context mContext;
     private ComponentName mServiceComponent;
@@ -32,18 +35,18 @@ public class PokeScheduler {
         JobInfo.Builder builder = new JobInfo.Builder(POKE_JOB_ID, mServiceComponent);
 
         final GregorianCalendar calendar = new GregorianCalendar();
-        calendar.set(Calendar.HOUR_OF_DAY, 12);
+        calendar.set(Calendar.HOUR_OF_DAY, 21);
         final Date todaysNoon = calendar.getTime();
         final Date now = new Date();
         if (now.after(todaysNoon)) {
             // TODO run now
         } else {
-            // TODO run by noon
+            // TODO run by 9pm
         }
 //            scheduleForTomorrow();
 
-        builder.setMinimumLatency(DELAY_SEC * 1000);
-        builder.setOverrideDeadline(DEADLINE_SEC * 1000);
+        builder.setPeriodic(THREE_TIMES_A_DAY, SIX_HOURS);
+        builder.setPersisted(true);
 
 //        builder.setRequiresDeviceIdle(mRequiresIdleCheckbox.isChecked());
 //        builder.setRequiresCharging(mRequiresChargingCheckBox.isChecked());
@@ -70,6 +73,7 @@ public class PokeScheduler {
         JobScheduler tm = (JobScheduler) mContext.getSystemService(Context.JOB_SCHEDULER_SERVICE);
         if (tm != null) {
             tm.schedule(builder.build());
+            Log.i(TAG, "Poking scheduled to happen daily at 9pm");
         }
     }
 }

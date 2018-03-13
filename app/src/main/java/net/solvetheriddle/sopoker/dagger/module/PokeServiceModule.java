@@ -5,6 +5,7 @@ import android.content.Context;
 import net.solvetheriddle.sopoker.app.profile.data.ProfileDao;
 import net.solvetheriddle.sopoker.app.schedule.PokeService;
 import net.solvetheriddle.sopoker.app.settings.SoPokerPrefs;
+import net.solvetheriddle.sopoker.network.ResponseParser;
 
 import javax.inject.Named;
 
@@ -21,9 +22,15 @@ public class PokeServiceModule {
         mPokeService = pokeService;
     }
 
+//    @Provides
+//    LoginDao provideLoginDao(final SoPokerPrefs prefs) {
+//        return new LoginDao(prefs);
+//    }
+
     @Provides
-    ProfileDao provideProfileDao(final Retrofit retrofit, final SoPokerPrefs prefs) {
-        return new ProfileDao(retrofit, prefs);
+    ProfileDao provideProfileDao(final Retrofit retrofit, final SoPokerPrefs prefs,
+            final ResponseParser responseParser) {
+        return new ProfileDao(retrofit, prefs, responseParser);
     }
 
     @Provides

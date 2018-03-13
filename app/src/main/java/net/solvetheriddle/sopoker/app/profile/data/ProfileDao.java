@@ -1,16 +1,18 @@
 package net.solvetheriddle.sopoker.app.profile.data;
 
 
+import android.support.annotation.NonNull;
 import android.text.TextUtils;
 
 import net.solvetheriddle.sopoker.app.settings.SoPokerPrefs;
+import net.solvetheriddle.sopoker.network.ResponseParser;
 import net.solvetheriddle.sopoker.network.StackExchangeService;
-import net.solvetheriddle.sopoker.network.model.UserResponse;
+import net.solvetheriddle.sopoker.network.model.User;
+
+import javax.inject.Inject;
 
 import retrofit2.Retrofit;
-import rx.Observer;
-import rx.android.schedulers.AndroidSchedulers;
-import rx.schedulers.Schedulers;
+import rx.Observable;
 
 public class ProfileDao {
 
@@ -19,24 +21,26 @@ public class ProfileDao {
 
     private Retrofit mRetrofit;
     private SoPokerPrefs mPrefs;
+    private ResponseParser mResponseParser;
 
+    @Inject
     public ProfileDao(final Retrofit retrofit,
-            final SoPokerPrefs prefs) {
+            final SoPokerPrefs prefs,
+            final ResponseParser responseParser) {
         mRetrofit = retrofit;
         mPrefs = prefs;
+        mResponseParser = responseParser;
     }
 
-    public void getProfile(final Observer<? super UserResponse> profileObserver) {
+    @NonNull
+    public Observable<User> getProfile() {
         String accessToken = mPrefs.getAccessToken();
         if (!TextUtils.isEmpty(accessToken)) {
-            getStackExchangeService()
+            return getStackExchangeService()
                     .getProfile(accessToken, API_KEY, SITE)
-                    .subscribeOn(Schedulers.io())
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .unsubscribeOn(Schedulers.io())
-                    .subscribe(profileObserver);
+                    .map(userResponse -> mResponseParser.parseUser(userResponse));
         } else {
-            profileObserver.onError(new IllegalAccessException("Missing access token"));
+            return Observable.error(new IllegalAccessException("Missing access token"));
         }
     }
 

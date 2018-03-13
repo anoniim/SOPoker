@@ -7,6 +7,8 @@ import com.google.gson.FieldNamingPolicy;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
+import net.solvetheriddle.sopoker.network.ResponseParser;
+
 import javax.inject.Singleton;
 
 import dagger.Module;
@@ -68,5 +70,11 @@ public class NetworkModule {
                 .baseUrl(mBaseUrl)
                 .client(okHttpClient)
                 .build();
+    }
+
+    @Provides
+    @Singleton
+    ResponseParser provideResponseParser() {
+        return new ResponseParser();
     }
 }

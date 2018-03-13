@@ -2,9 +2,7 @@ package net.solvetheriddle.sopoker.app.login;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Handler;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.support.annotation.StringRes;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -17,7 +15,6 @@ import net.solvetheriddle.sopoker.app.profile.ProfileActivity;
 import net.solvetheriddle.sopoker.dagger.component.DaggerLoginScreenComponent;
 import net.solvetheriddle.sopoker.dagger.module.LoginScreenModule;
 import net.solvetheriddle.sopoker.network.model.AccessToken;
-import net.solvetheriddle.sopoker.network.model.User;
 
 import javax.inject.Inject;
 
@@ -112,17 +109,9 @@ public class LoginActivity extends AppCompatActivity implements LoginScreenContr
     }
 
     @Override
-    public void logProfile(@Nullable final User profile) {
-        log(getString(R.string.login_log_logged_in, profile));
-    }
-
-    @Override
-    public void redirectToProfile(final User profile) {
-        log(R.string.login_log_done);
-        // TODO Rx for the delay?
-        new Handler().postDelayed(() -> {
-            finishAndGoToProfile(profile);
-        }, REDIRECT_DELAY);
+    public void redirectToProfile() {
+        startActivity(ProfileActivity.getCallingIntent(this));
+        finish();
     }
 
     @Override
@@ -131,11 +120,6 @@ public class LoginActivity extends AppCompatActivity implements LoginScreenContr
         clearBackStackIntent
                 .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(clearBackStackIntent);
-    }
-
-    void finishAndGoToProfile(final User profile) {
-        startActivity(ProfileActivity.getCallingIntent(this, profile));
-        finish();
     }
 
     @Override

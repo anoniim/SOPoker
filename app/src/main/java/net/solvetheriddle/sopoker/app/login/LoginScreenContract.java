@@ -6,22 +6,19 @@ import android.support.annotation.Nullable;
 import android.support.annotation.StringRes;
 
 import net.solvetheriddle.sopoker.network.model.AccessToken;
-import net.solvetheriddle.sopoker.network.model.User;
 
 public interface LoginScreenContract {
 
     interface View {
         void openAuthenticationActivity(@NonNull String loginUrl);
         void showError(@Nullable String message);
-        void logProfile(@Nullable User response);
         void log(@StringRes int log);
-        void redirectToProfile(final User profile);
+        void redirectToProfile();
         void clearBackStack();
     }
 
     interface Presenter {
         void login();
-        void getProfile();
         void autoLogin();
         void authenticationSuccessful(AccessToken accessToken);
         void logout();

@@ -3,6 +3,11 @@ package net.solvetheriddle.sopoker.app.login.data;
 
 import android.net.Uri;
 
+import net.solvetheriddle.sopoker.app.settings.SoPokerPrefs;
+import net.solvetheriddle.sopoker.network.model.AccessToken;
+
+import javax.inject.Inject;
+
 public class LoginDao {
 
     public static final String API_OAUTH_REDIRECT = "https://sopoker.solvetheriddle.net";
@@ -15,11 +20,16 @@ public class LoginDao {
     private static final String SCOPE = "scope";
     private static final String REDIRECT_URI = "redirect_uri";
 
+    private SoPokerPrefs mPrefs;
+
+    @Inject
+    public LoginDao(final SoPokerPrefs prefs) {
+        mPrefs = prefs;
+    }
 
 
-
-    public Uri getLoginUri() {
-        return getImplicitUri();
+    public String getLoginUri() {
+        return getImplicitUri().toString();
     }
 
     private Uri getExplicitUri() {
@@ -38,5 +48,9 @@ public class LoginDao {
                 .appendQueryParameter(SCOPE, SO_POKER_AUTH_SCOPE)
                 .appendQueryParameter(REDIRECT_URI, API_OAUTH_REDIRECT)
                 .build();
+    }
+
+    public void authenticated(final AccessToken accessToken) {
+        mPrefs.storeAccessToken(accessToken);
     }
 }

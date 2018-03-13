@@ -12,7 +12,13 @@ import net.solvetheriddle.sopoker.network.model.UserResponse;
 
 import java.util.List;
 
+import javax.inject.Inject;
+
 public class ResponseParser {
+
+    @Inject
+    public ResponseParser() {
+    }
 
     @Nullable
     public AccessToken parseAccessToken(@NonNull final String url) {
