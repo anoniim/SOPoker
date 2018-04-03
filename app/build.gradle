@@ -3,7 +3,7 @@ apply plugin: 'com.android.application'
 android {
 
     compileSdkVersion 27
-    buildToolsVersion "27.0.2"
+    buildToolsVersion "27.0.3"
 
     defaultConfig {
         minSdkVersion 24
@@ -57,7 +57,9 @@ configurations {
 
 ext {
     supportLibVersion = '27.1.0'
-    dagger2Version = '2.10'
+    archRoomVersion = '1.0.0'
+    archLifecycleVersion = '1.1.1'
+    dagger2Version = '2.11'
     okhttp3Version = '3.6.0'
     retrofit2Version = '2.2.0'
     butterKnifeVersion = '8.5.1'
@@ -66,50 +68,61 @@ ext {
 }
 
 dependencies {
-    compile fileTree(dir: 'libs', include: ['*.jar'])
-    androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+    androidTestImplementation('com.android.support.test.espresso:espresso-core:2.2.2', {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
 
+    // Android
+    implementation "android.arch.persistence.room:runtime:$archRoomVersion"
+    implementation "android.arch.persistence.room:rxjava2:$archRoomVersion"
+    annotationProcessor "android.arch.persistence.room:compiler:$archRoomVersion"
+    implementation "android.arch.lifecycle:extensions:$archLifecycleVersion"
+    implementation "android.arch.lifecycle:reactivestreams:$archLifecycleVersion"
+    annotationProcessor "android.arch.lifecycle:compiler:$archLifecycleVersion"
+
     // Support
-    compile "com.android.support:appcompat-v7:$supportLibVersion"
-    compile "com.android.support:design:$supportLibVersion"
-    compile "com.android.support:support-v4:$supportLibVersion"
-    compile 'com.android.support.constraint:constraint-layout:1.0.2'
+    implementation "com.android.support:appcompat-v7:$supportLibVersion"
+    implementation "com.android.support:design:$supportLibVersion"
+    implementation "com.android.support:support-v4:$supportLibVersion"
+    implementation 'com.android.support.constraint:constraint-layout:1.0.2'
 
     // Dagger 2
-    compile "com.google.dagger:dagger:$dagger2Version"
+    implementation "com.google.dagger:dagger:$dagger2Version"
+    implementation "com.google.dagger:dagger-android:$dagger2Version"
+    implementation "com.google.dagger:dagger-android-support:$dagger2Version"
     annotationProcessor "com.google.dagger:dagger-compiler:$dagger2Version"
+    annotationProcessor "com.google.dagger:dagger-android-processor:$dagger2Version"
 
     // OkHttp
-    compile "com.squareup.okhttp3:okhttp:$okhttp3Version"
-    compile "com.squareup.okhttp3:logging-interceptor:$okhttp3Version"
+    implementation "com.squareup.okhttp3:okhttp:$okhttp3Version"
+    implementation "com.squareup.okhttp3:logging-interceptor:$okhttp3Version"
 
     // Retrofit
-    compile "com.squareup.retrofit2:retrofit:$retrofit2Version"
-    compile "com.squareup.retrofit2:converter-moshi:$retrofit2Version"
-    compile "com.squareup.retrofit2:adapter-rxjava:$retrofit2Version"
-    compile "com.squareup.retrofit2:converter-gson:$retrofit2Version"
+    implementation "com.squareup.retrofit2:retrofit:$retrofit2Version"
+    implementation "com.squareup.retrofit2:converter-moshi:$retrofit2Version"
+    implementation "com.squareup.retrofit2:adapter-rxjava2:$retrofit2Version"
+    implementation "com.squareup.retrofit2:converter-gson:$retrofit2Version"
     internalDebugCompile "com.squareup.retrofit2:retrofit-mock:$retrofit2Version"
 
     // Gson
-    compile 'com.google.code.gson:gson:2.8.0'
+    implementation 'com.google.code.gson:gson:2.8.0'
 
     // Rx
-    compile 'io.reactivex:rxjava:1.2.4'
-    compile 'io.reactivex:rxandroid:1.2.1'
+    implementation 'io.reactivex.rxjava2:rxjava:2.1.12'
+    implementation 'io.reactivex.rxjava2:rxandroid:2.0.2'
 
     // Butter Knife
-    compile "com.jakewharton:butterknife:$butterKnifeVersion"
+    implementation "com.jakewharton:butterknife:$butterKnifeVersion"
     annotationProcessor "com.jakewharton:butterknife-compiler:$butterKnifeVersion"
 
-    compile 'com.squareup.okio:okio:1.13.0'
-    compile 'com.squareup.moshi:moshi:1.4.0'
-    compile 'com.squareup.picasso:picasso:2.5.2'
-    compile 'com.jakewharton.picasso:picasso2-okhttp3-downloader:1.1.0'
-    testCompile 'junit:junit:4.12'
-    provided 'javax.annotation:jsr250-api:1.0'
-//    compile 'net.openid:appauth:0.7.0'
-    compile 'com.github.scribejava:scribejava-apis:5.0.0'
+    implementation 'com.squareup.okio:okio:1.13.0'
+    implementation 'com.squareup.moshi:moshi:1.4.0'
+    implementation 'com.squareup.picasso:picasso:2.5.2'
+    implementation 'com.jakewharton.picasso:picasso2-okhttp3-downloader:1.1.0'
+    testImplementation 'junit:junit:4.12'
+    compileOnly 'javax.annotation:jsr250-api:1.0'
+//    implementation 'net.openid:appauth:0.7.0'
+    implementation 'com.github.scribejava:scribejava-apis:5.0.0'
 
 }

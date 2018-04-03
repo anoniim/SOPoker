@@ -1,11 +1,14 @@
 package net.solvetheriddle.sopoker.network.model;
 
+import android.arch.persistence.room.Embedded;
 import android.os.Parcel;
 import android.os.Parcelable;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
+//@Entity
+//@TypeConverters(DateConverter.class)
 public class User implements Parcelable {
 
     public static final Parcelable.Creator<User> CREATOR = new Parcelable.Creator<User>() {
@@ -15,9 +18,6 @@ public class User implements Parcelable {
         @Override
         public User[] newArray(int size) {return new User[size];}
     };
-    @SerializedName("badge_counts")
-    @Expose
-    public BadgeCounts badgeCounts;
     @SerializedName("view_count")
     @Expose
     public Integer viewCount;
@@ -97,37 +97,12 @@ public class User implements Parcelable {
     @Expose
     public String displayName;
 
-    public User() {}
+//    @ForeignKey(entity = Attempt.class,
+//            parentColumns = "timestamp",
+//            childColumns = "attemptTimestamp")
+//    public Date attemptTimestamp;
 
-    protected User(Parcel in) {
-        this.badgeCounts = in.readParcelable(BadgeCounts.class.getClassLoader());
-        this.viewCount = (Integer) in.readValue(Integer.class.getClassLoader());
-        this.downVoteCount = (Integer) in.readValue(Integer.class.getClassLoader());
-        this.upVoteCount = (Integer) in.readValue(Integer.class.getClassLoader());
-        this.answerCount = (Integer) in.readValue(Integer.class.getClassLoader());
-        this.questionCount = (Integer) in.readValue(Integer.class.getClassLoader());
-        this.accountId = (Integer) in.readValue(Integer.class.getClassLoader());
-        this.isEmployee = (Boolean) in.readValue(Boolean.class.getClassLoader());
-        this.lastModifiedDate = (Integer) in.readValue(Integer.class.getClassLoader());
-        this.lastAccessDate = (Integer) in.readValue(Integer.class.getClassLoader());
-        this.age = (Integer) in.readValue(Integer.class.getClassLoader());
-        this.reputationChangeYear = (Integer) in.readValue(Integer.class.getClassLoader());
-        this.reputationChangeQuarter = (Integer) in.readValue(Integer.class.getClassLoader());
-        this.reputationChangeMonth = (Integer) in.readValue(Integer.class.getClassLoader());
-        this.reputationChangeWeek = (Integer) in.readValue(Integer.class.getClassLoader());
-        this.reputationChangeDay = (Integer) in.readValue(Integer.class.getClassLoader());
-        this.reputation = (Integer) in.readValue(Integer.class.getClassLoader());
-        this.creationDate = (Integer) in.readValue(Integer.class.getClassLoader());
-        this.userType = in.readString();
-        this.userId = (Integer) in.readValue(Integer.class.getClassLoader());
-        this.acceptRate = (Integer) in.readValue(Integer.class.getClassLoader());
-        this.aboutMe = in.readString();
-        this.location = in.readString();
-        this.websiteUrl = in.readString();
-        this.link = in.readString();
-        this.profileImage = in.readString();
-        this.displayName = in.readString();
-    }
+    public User() {}
 
     public BadgeCounts getBadgeCounts() {
         return badgeCounts;
@@ -237,8 +212,57 @@ public class User implements Parcelable {
         return displayName;
     }
 
+    //    public Date getAttemptTimestamp() {
+//        return attemptTimestamp;
+//    }
+//
+//    public void setAttemptTimestamp(final Date attemptTimestamp) {
+//        this.attemptTimestamp = attemptTimestamp;
+//    }
+    @SerializedName("badge_counts")
+    @Expose
+    @Embedded
+    public BadgeCounts badgeCounts;
+
     @Override
     public int describeContents() { return 0; }
+
+    protected User(Parcel in) {
+        this.badgeCounts = in.readParcelable(BadgeCounts.class.getClassLoader());
+        this.viewCount = (Integer) in.readValue(Integer.class.getClassLoader());
+        this.downVoteCount = (Integer) in.readValue(Integer.class.getClassLoader());
+        this.upVoteCount = (Integer) in.readValue(Integer.class.getClassLoader());
+        this.answerCount = (Integer) in.readValue(Integer.class.getClassLoader());
+        this.questionCount = (Integer) in.readValue(Integer.class.getClassLoader());
+        this.accountId = (Integer) in.readValue(Integer.class.getClassLoader());
+        this.isEmployee = (Boolean) in.readValue(Boolean.class.getClassLoader());
+        this.lastModifiedDate = (Integer) in.readValue(Integer.class.getClassLoader());
+        this.lastAccessDate = (Integer) in.readValue(Integer.class.getClassLoader());
+        this.age = (Integer) in.readValue(Integer.class.getClassLoader());
+        this.reputationChangeYear = (Integer) in.readValue(Integer.class.getClassLoader());
+        this.reputationChangeQuarter = (Integer) in.readValue(Integer.class.getClassLoader());
+        this.reputationChangeMonth = (Integer) in.readValue(Integer.class.getClassLoader());
+        this.reputationChangeWeek = (Integer) in.readValue(Integer.class.getClassLoader());
+        this.reputationChangeDay = (Integer) in.readValue(Integer.class.getClassLoader());
+        this.reputation = (Integer) in.readValue(Integer.class.getClassLoader());
+        this.creationDate = (Integer) in.readValue(Integer.class.getClassLoader());
+        this.userType = in.readString();
+        this.userId = (Integer) in.readValue(Integer.class.getClassLoader());
+        this.acceptRate = (Integer) in.readValue(Integer.class.getClassLoader());
+        this.aboutMe = in.readString();
+        this.location = in.readString();
+        this.websiteUrl = in.readString();
+        this.link = in.readString();
+        this.profileImage = in.readString();
+        this.displayName = in.readString();
+//        long tmpAttemptTimestamp = in.readLong();
+//        this.attemptTimestamp = tmpAttemptTimestamp == -1 ? null : new Date(tmpAttemptTimestamp);
+    }
+
+    @Override
+    public String toString() {
+        return displayName;
+    }
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
@@ -269,10 +293,6 @@ public class User implements Parcelable {
         dest.writeString(this.link);
         dest.writeString(this.profileImage);
         dest.writeString(this.displayName);
-    }
-
-    @Override
-    public String toString() {
-        return displayName;
+//        dest.writeLong(this.attemptTimestamp != null ? this.attemptTimestamp.getTime() : -1);
     }
 }

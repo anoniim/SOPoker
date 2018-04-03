@@ -6,15 +6,12 @@ import android.os.Parcelable;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
+//@Entity(foreignKeys = {
+//        @ForeignKey(entity = User.class,
+//                parentColumns = "attemptTimestamp",
+//                childColumns = "attemptTimestamp")})
 public class BadgeCounts implements Parcelable {
 
-    public static final Parcelable.Creator<BadgeCounts> CREATOR = new Parcelable.Creator<BadgeCounts>() {
-        @Override
-        public BadgeCounts createFromParcel(Parcel source) {return new BadgeCounts(source);}
-
-        @Override
-        public BadgeCounts[] newArray(int size) {return new BadgeCounts[size];}
-    };
     @SerializedName("bronze")
     @Expose
     public Integer bronze;
@@ -25,7 +22,20 @@ public class BadgeCounts implements Parcelable {
     @Expose
     public Integer gold;
 
+//    @PrimaryKey
+//    @NonNull
+//    @ColumnInfo(name="attemptTimestamp")
+//    public long attemptTimestamp;
+
     public BadgeCounts() {}
+
+    public static final Parcelable.Creator<BadgeCounts> CREATOR = new Parcelable.Creator<BadgeCounts>() {
+        @Override
+        public BadgeCounts createFromParcel(Parcel source) {return new BadgeCounts(source);}
+
+        @Override
+        public BadgeCounts[] newArray(int size) {return new BadgeCounts[size];}
+    };
 
     protected BadgeCounts(Parcel in) {
         this.bronze = (Integer) in.readValue(Integer.class.getClassLoader());

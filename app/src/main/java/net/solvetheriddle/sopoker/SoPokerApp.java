@@ -1,28 +1,32 @@
 package net.solvetheriddle.sopoker;
 
-import android.app.Application;
-
-import net.solvetheriddle.sopoker.dagger.component.AppComponent;
 import net.solvetheriddle.sopoker.dagger.component.DaggerAppComponent;
 import net.solvetheriddle.sopoker.dagger.module.NetworkModule;
 
+import dagger.android.AndroidInjector;
+import dagger.android.HasActivityInjector;
+import dagger.android.support.DaggerApplication;
 
-public class SoPokerApp extends Application {
 
-    AppComponent mAppComponent;
+public class SoPokerApp extends DaggerApplication implements HasActivityInjector {
+
+//    @Inject DispatchingAndroidInjector<Activity> dispatchingActivityInjector;
 
     @Override
     public void onCreate() {
         super.onCreate();
+    }
 
-        mAppComponent = DaggerAppComponent.builder()
+//    @Override
+//    public AndroidInjector<Activity> activityInjector() {
+//        return dispatchingActivityInjector;
+//    }
+
+    @Override
+    protected AndroidInjector<? extends DaggerApplication> applicationInjector() {
+        return DaggerAppComponent.builder()
                 .application(this)
                 .networkModule(new NetworkModule(BuildConfig.BASE_URL))
                 .build();
-        mAppComponent.inject(this);
-    }
-
-    public AppComponent getAppComponent() {
-        return mAppComponent;
     }
 }

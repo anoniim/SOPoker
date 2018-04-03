@@ -1,4 +1,4 @@
-package net.solvetheriddle.sopoker.app.login;
+package net.solvetheriddle.sopoker.app.auth;
 
 
 import android.content.Context;

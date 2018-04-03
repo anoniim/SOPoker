@@ -11,6 +11,9 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
 
+import javax.inject.Inject;
+import javax.inject.Named;
+
 public class PokeScheduler {
 
     private static final String TAG = PokeScheduler.class.getCanonicalName();
@@ -22,14 +25,16 @@ public class PokeScheduler {
     private static final int EVERY_30_MINUTES = 30 * 60 * 1000;
     private static final int TEN_MINUTES = 10 * 60 * 1000;
 
-    private Context mContext;
+    @Inject
+    @Named("application")
+    Context mContext;
     private ComponentName mServiceComponent;
 
+    @Inject
     public PokeScheduler(Context context) {
-        mContext = context;
+//        mContext = context;
         mServiceComponent = new ComponentName(context, PokeService.class);
     }
-
 
     public void schedule() {
         JobInfo.Builder builder = new JobInfo.Builder(POKE_JOB_ID, mServiceComponent);
@@ -45,7 +50,8 @@ public class PokeScheduler {
         }
 //            scheduleForTomorrow();
 
-        builder.setPeriodic(THREE_TIMES_A_DAY, SIX_HOURS);
+//        builder.setPeriodic(THREE_TIMES_A_DAY, SIX_HOURS);
+        builder.setPeriodic(EVERY_30_MINUTES, TEN_MINUTES);
         builder.setPersisted(true);
 
 //        builder.setRequiresDeviceIdle(mRequiresIdleCheckbox.isChecked());

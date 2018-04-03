@@ -2,7 +2,7 @@ package net.solvetheriddle.sopoker.dagger.module;
 
 import android.content.Context;
 
-import net.solvetheriddle.sopoker.app.profile.data.ProfileDao;
+import net.solvetheriddle.sopoker.app.profile.data.remote.ProfileApi;
 import net.solvetheriddle.sopoker.app.schedule.PokeService;
 import net.solvetheriddle.sopoker.app.settings.SoPokerPrefs;
 import net.solvetheriddle.sopoker.network.ResponseParser;
@@ -23,14 +23,14 @@ public class PokeServiceModule {
     }
 
 //    @Provides
-//    LoginDao provideLoginDao(final SoPokerPrefs prefs) {
-//        return new LoginDao(prefs);
+//    LoginApi provideLoginDao(final SoPokerPrefs prefs) {
+//        return new LoginApi(prefs);
 //    }
 
     @Provides
-    ProfileDao provideProfileDao(final Retrofit retrofit, final SoPokerPrefs prefs,
+    ProfileApi provideProfileDao(final Retrofit retrofit, final SoPokerPrefs prefs,
             final ResponseParser responseParser) {
-        return new ProfileDao(retrofit, prefs, responseParser);
+        return new ProfileApi(retrofit, prefs, responseParser);
     }
 
     @Provides

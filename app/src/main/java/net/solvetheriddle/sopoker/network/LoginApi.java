@@ -1,4 +1,4 @@
-package net.solvetheriddle.sopoker.app.login.data;
+package net.solvetheriddle.sopoker.network;
 
 
 import android.net.Uri;
@@ -8,7 +8,7 @@ import net.solvetheriddle.sopoker.network.model.AccessToken;
 
 import javax.inject.Inject;
 
-public class LoginDao {
+public class LoginApi {
 
     public static final String API_OAUTH_REDIRECT = "https://sopoker.solvetheriddle.net";
     //    private static final String API_OAUTH_REDIRECT = "https://stackexchange.com/oauth/login_success";
@@ -23,7 +23,7 @@ public class LoginDao {
     private SoPokerPrefs mPrefs;
 
     @Inject
-    public LoginDao(final SoPokerPrefs prefs) {
+    public LoginApi(final SoPokerPrefs prefs) {
         mPrefs = prefs;
     }
 

@@ -2,37 +2,43 @@ package net.solvetheriddle.sopoker.dagger.component;
 
 
 import android.app.Application;
-import android.content.Context;
 
-import net.solvetheriddle.sopoker.SoPokerApp;
-import net.solvetheriddle.sopoker.app.settings.SoPokerPrefs;
+import net.solvetheriddle.sopoker.dagger.module.ActivityBindingsModule;
 import net.solvetheriddle.sopoker.dagger.module.AppModule;
 import net.solvetheriddle.sopoker.dagger.module.NetworkModule;
 
-import javax.inject.Named;
 import javax.inject.Singleton;
 
 import dagger.BindsInstance;
 import dagger.Component;
-import retrofit2.Retrofit;
+import dagger.android.AndroidInjector;
+import dagger.android.support.AndroidSupportInjectionModule;
+import dagger.android.support.DaggerApplication;
 
 @Singleton
-@Component(modules = {AppModule.class, NetworkModule.class})
-public interface AppComponent {
-    void inject(SoPokerApp application);
+@Component(modules = {AndroidSupportInjectionModule.class, AppModule.class, NetworkModule.class,
+        ActivityBindingsModule.class})
+public interface AppComponent extends AndroidInjector<DaggerApplication> {
 
-    @Named("application")
-    Context getContext();
+    @Override
+    void inject(DaggerApplication application);
 
-    SoPokerPrefs getSoPokerPrefs();
-
-    Retrofit getRetrofit();
+//    @Named("application")
+//    Context getContext();
+//
+//    SoPokerPrefs getSoPokerPrefs();
+//
+//    Retrofit getRetrofit();
+//
+//    AppDatabase getAppDatabase();
+//
+//    PokeScheduler getPokeScheduler();
 
     @Component.Builder
     interface Builder {
-        AppComponent build();
         Builder networkModule(NetworkModule networkModule);
         @BindsInstance
         Builder application(Application application);
+        AppComponent build();
     }
 }

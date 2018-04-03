@@ -9,6 +9,18 @@
     tools:context=".app.profile.ProfileActivity"
     tools:showIn="@layout/activity_profile">
 
+    <!--<TextView-->
+    <!--android:id="@+id/username_text"-->
+    <!--android:layout_width="wrap_content"-->
+    <!--android:layout_height="wrap_content"-->
+    <!--tools:text="username"-->
+    <!--android:textAppearance="@style/TextAppearance.AppCompat.Large"-->
+    <!--android:layout_marginRight="16dp"-->
+    <!--app:layout_constraintRight_toRightOf="parent"-->
+    <!--android:layout_marginLeft="16dp"-->
+    <!--app:layout_constraintLeft_toLeftOf="parent"-->
+    <!--app:layout_constraintTop_toTopOf="parent"-->
+    <!--android:layout_marginTop="16dp"/>-->
 
     <TextView
         android:id="@+id/username_text"
@@ -22,4 +34,42 @@
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         android:layout_marginTop="16dp"/>
+
+    <TextView
+        android:id="@+id/reputation_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="16dp"
+        android:layout_marginTop="16dp"
+        android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/username_text"
+        tools:text="2,350 Gold: 2 Silver: 15 Bronze: 37"/>
+
+    <TextView
+        android:id="@+id/history_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="16dp"
+        android:layout_marginTop="16dp"
+        android:text="@string/history"
+        android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/reputation_text"/>
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/attempt_history_view"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="16dp"
+        android:layout_marginTop="16dp"
+        android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/history_title"
+        tools:text="last attempt"/>
 </android.support.constraint.ConstraintLayout>

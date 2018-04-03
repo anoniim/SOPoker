@@ -1,55 +1,46 @@
 package net.solvetheriddle.sopoker.dagger.module;
 
-import android.content.Context;
+import android.app.Application;
 
-import net.solvetheriddle.sopoker.app.profile.ProfileActivity;
-import net.solvetheriddle.sopoker.app.profile.ProfileScreenContract;
-import net.solvetheriddle.sopoker.app.profile.data.ProfileDao;
+import net.solvetheriddle.sopoker.app.profile.ProfilePresenter;
 import net.solvetheriddle.sopoker.app.profile.data.ProfileRepository;
+import net.solvetheriddle.sopoker.app.profile.data.local.db.AppDatabase;
+import net.solvetheriddle.sopoker.app.profile.data.remote.ProfileApi;
 import net.solvetheriddle.sopoker.app.schedule.PokeScheduler;
 import net.solvetheriddle.sopoker.app.settings.SoPokerPrefs;
+import net.solvetheriddle.sopoker.network.LoginApi;
 import net.solvetheriddle.sopoker.network.ResponseParser;
-
-import javax.inject.Named;
 
 import dagger.Module;
 import dagger.Provides;
 import retrofit2.Retrofit;
 
 @Module
-public class ProfileScreenModule {
+public abstract class ProfileScreenModule {
 
-    private final ProfileActivity mProfileActivity;
-
-    public ProfileScreenModule(ProfileActivity profileActivity) {
-        mProfileActivity = profileActivity;
+    @Provides
+    static ProfilePresenter.Factory bindViewModelFactory(final Application application,
+            final ProfileRepository profileRepository,
+            final LoginApi loginApi,
+            final PokeScheduler pokeScheduler) {
+        return new ProfilePresenter.Factory(application, profileRepository, loginApi, pokeScheduler);
     }
 
     @Provides
-    ProfileScreenContract.View provideLoginScreenContractView() {
-        return mProfileActivity;
+    static ProfileRepository provideProfileRepository(AppDatabase appDatabase,
+            final ProfileApi profileApi) {
+        return new ProfileRepository(appDatabase, profileApi);
     }
 
     @Provides
-    PokeScheduler providePokeScheduler() {
-        return new PokeScheduler(mProfileActivity);
-    }
-
-    @Provides
-    ProfileRepository provideProfileRepository(final ProfileDao profileDao) {
-        return new ProfileRepository(profileDao);
-    }
-
-    @Provides
-    ProfileDao provideProfileDao(final Retrofit retrofit,
+    static ProfileApi provideProfileDao(final Retrofit retrofit,
             final SoPokerPrefs prefs,
             final ResponseParser responseParser) {
-        return new ProfileDao(retrofit, prefs, responseParser);
+        return new ProfileApi(retrofit, prefs, responseParser);
     }
 
     @Provides
-    @Named("activity")
-    Context provideContext() {
-        return mProfileActivity;
+    static LoginApi provideLoginDao(final SoPokerPrefs prefs) {
+        return new LoginApi(prefs);
     }
 }

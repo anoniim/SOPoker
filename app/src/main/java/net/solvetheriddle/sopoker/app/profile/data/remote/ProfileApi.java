@@ -1,4 +1,4 @@
-package net.solvetheriddle.sopoker.app.profile.data;
+package net.solvetheriddle.sopoker.app.profile.data.remote;
 
 
 import android.support.annotation.NonNull;
@@ -11,12 +11,12 @@ import net.solvetheriddle.sopoker.network.model.User;
 
 import javax.inject.Inject;
 
+import io.reactivex.Observable;
 import retrofit2.Retrofit;
-import rx.Observable;
 
-public class ProfileDao {
+public class ProfileApi {
 
-    public static final String API_KEY = "2Aiw5tBFMD)xb2TVgS))cg((";
+    private static final String API_KEY = "2Aiw5tBFMD)xb2TVgS))cg((";
     private static final String SITE = "stackoverflow";
 
     private Retrofit mRetrofit;
@@ -24,7 +24,7 @@ public class ProfileDao {
     private ResponseParser mResponseParser;
 
     @Inject
-    public ProfileDao(final Retrofit retrofit,
+    public ProfileApi(final Retrofit retrofit,
             final SoPokerPrefs prefs,
             final ResponseParser responseParser) {
         mRetrofit = retrofit;

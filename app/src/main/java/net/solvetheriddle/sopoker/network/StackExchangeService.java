@@ -2,9 +2,9 @@ package net.solvetheriddle.sopoker.network;
 
 import net.solvetheriddle.sopoker.network.model.UserResponse;
 
+import io.reactivex.Observable;
 import retrofit2.http.GET;
 import retrofit2.http.Query;
-import rx.Observable;
 
 public interface StackExchangeService {
 
