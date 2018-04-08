@@ -22,6 +22,11 @@ public interface AttemptDao {
     LiveData<List<Attempt>> loadAllAttempts();
 
     @Query("select * from attempt"
+           + " where timestamp > :timestamp"
+           + " order by timestamp asc")
+    Flowable<List<Attempt>> loadAttemptsFrom(long timestamp);
+
+    @Query("select * from attempt"
            + " where status = 0"
            + " order by timestamp desc limit 1")
     Flowable<Attempt> loadLatestSuccessfulAttempt();

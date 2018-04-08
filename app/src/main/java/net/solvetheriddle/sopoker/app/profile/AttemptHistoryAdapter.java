@@ -12,7 +12,6 @@ import android.widget.TextView;
 
 import net.solvetheriddle.sopoker.R;
 import net.solvetheriddle.sopoker.network.model.Attempt;
-import net.solvetheriddle.sopoker.network.model.AttemptStatus;
 
 import java.util.List;
 
@@ -32,7 +31,8 @@ class AttemptHistoryAdapter extends RecyclerView.Adapter<AttemptHistoryAdapter.A
     @Override
     public AttemptHistoryAdapter.AttemptHistoryViewHolder onCreateViewHolder(@NonNull final ViewGroup parent,
             final int viewType) {
-        View attemptItemView = mInflater.inflate(R.layout.attempt_item, parent, false);
+//        View attemptItemView = mInflater.inflate(R.layout.attempt_item, parent, false);
+        View attemptItemView = mInflater.inflate(android.R.layout.simple_list_item_2, parent, false);
         return new AttemptHistoryViewHolder(attemptItemView);
     }
 
@@ -42,14 +42,28 @@ class AttemptHistoryAdapter extends RecyclerView.Adapter<AttemptHistoryAdapter.A
         if (mAttempts != null) {
             final Attempt attempt = mAttempts.get(position);
             holder.attemptTime.setText(attempt.getTimestamp().toString());
+            final int backgroundColor;
+            switch (attempt.getStatus()) {
+                case Attempt.Status.POKE_SUCCESS:
+                    backgroundColor = R.color.success;
+                    break;
+                case Attempt.Status.POKE_ERROR:
+                    backgroundColor = R.color.error;
+                    break;
+                default:
+                case Attempt.Status.POKE_NOT_NEEDED:
+                    backgroundColor = R.color.not_needed;
+                    break;
+            }
             setBackground(
-                    holder.attemptTime,
-                    attempt.getStatus() == AttemptStatus.SUCCESS ? android.R.color.transparent : R.color.error);
+                    holder.attemptType,
+                    backgroundColor);
+            holder.attemptType.setText(attempt.isManual() ? "MANUAL" : "AUTOMATIC");
         }
     }
 
     private void setBackground(final TextView view, final @ColorRes int color) {
-        view.setBackgroundColor(ContextCompat.getColor(view.getContext(), color));
+        view.setTextColor(ContextCompat.getColor(view.getContext(), color));
     }
 
     @Override
@@ -68,8 +82,10 @@ class AttemptHistoryAdapter extends RecyclerView.Adapter<AttemptHistoryAdapter.A
 
     class AttemptHistoryViewHolder extends RecyclerView.ViewHolder {
 
-        @BindView(R.id.attempt_time)
-        TextView attemptTime;
+        //        @BindView(R.id.attempt_time) TextView attemptTime;
+//        @BindView(R.id.attempt_type
+        @BindView(android.R.id.text1) TextView attemptTime;
+        @BindView(android.R.id.text2) TextView attemptType;
 
         AttemptHistoryViewHolder(final View itemView) {
             super(itemView);

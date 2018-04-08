@@ -12,31 +12,34 @@ import java.util.Date;
 import java.util.GregorianCalendar;
 
 import javax.inject.Inject;
-import javax.inject.Named;
 
 public class PokeScheduler {
 
-    private static final String TAG = PokeScheduler.class.getCanonicalName();
+    private static final String TAG = "StackOverflow Poker";
 
     private static final int POKE_JOB_ID = 46;
 
-    private static final int THREE_TIMES_A_DAY = 8 * 60 * 60 * 1000;
-    private static final int SIX_HOURS = 6 * 60 * 60 * 1000;
-    private static final int EVERY_30_MINUTES = 30 * 60 * 1000;
-    private static final int TEN_MINUTES = 10 * 60 * 1000;
+    private static final int MINUTES = 60 * 1000;
+    private static final int THREE_TIMES_A_DAY = 8 * 60 * MINUTES;
+    private static final int SIX_HOURS = 6 * 60 * MINUTES;
+    private static final int EVERY_30_MINUTES = 30 * MINUTES;
+    private static final int TEN_MINUTES = 10 * MINUTES;
+    private static final int EVERY_15_MINUTES = 15 * MINUTES;
+    private static final int FIVE_MINUTES = 5 * MINUTES;
 
-    @Inject
-    @Named("application")
     Context mContext;
     private ComponentName mServiceComponent;
 
     @Inject
     public PokeScheduler(Context context) {
-//        mContext = context;
+        mContext = context;
         mServiceComponent = new ComponentName(context, PokeService.class);
     }
 
     public void schedule() {
+        Log.i(TAG, "Scheduling PokeService job");
+        Log.d(TAG, "MinFlexMillis: " + JobInfo.getMinFlexMillis());
+        Log.d(TAG, "MinPeriodMillis: " + JobInfo.getMinPeriodMillis());
         JobInfo.Builder builder = new JobInfo.Builder(POKE_JOB_ID, mServiceComponent);
 
         final GregorianCalendar calendar = new GregorianCalendar();
@@ -51,7 +54,9 @@ public class PokeScheduler {
 //            scheduleForTomorrow();
 
 //        builder.setPeriodic(THREE_TIMES_A_DAY, SIX_HOURS);
-        builder.setPeriodic(EVERY_30_MINUTES, TEN_MINUTES);
+        final int interval = EVERY_15_MINUTES;
+        final int flex = FIVE_MINUTES;
+        builder.setPeriodic(interval, flex);
         builder.setPersisted(true);
 
 //        builder.setRequiresDeviceIdle(mRequiresIdleCheckbox.isChecked());
@@ -74,12 +79,14 @@ public class PokeScheduler {
 //
 //        builder.setExtras(extras);
 
+        Log.i(TAG,
+                "The job will be triggered every " + (interval / MINUTES) + " minutes (" + (flex / MINUTES) + " minutes flex period)");
+
         // Schedule job
-        Log.d(TAG, "Scheduling job");
         JobScheduler tm = (JobScheduler) mContext.getSystemService(Context.JOB_SCHEDULER_SERVICE);
         if (tm != null) {
-            tm.schedule(builder.build());
-            Log.i(TAG, "Poking scheduled to happen daily at 9pm");
+            final JobInfo jobInfo = builder.build();
+            tm.schedule(jobInfo);
         }
     }
 }

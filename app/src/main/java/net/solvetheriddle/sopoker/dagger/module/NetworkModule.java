@@ -7,6 +7,9 @@ import com.google.gson.FieldNamingPolicy;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
+import net.solvetheriddle.sopoker.app.profile.data.remote.ProfileApi;
+import net.solvetheriddle.sopoker.app.settings.SoPokerPrefs;
+import net.solvetheriddle.sopoker.network.LoginApi;
 import net.solvetheriddle.sopoker.network.ResponseParser;
 
 import javax.inject.Singleton;
@@ -27,6 +30,20 @@ public class NetworkModule {
 
     public NetworkModule(final String baseUrl) {
         mBaseUrl = baseUrl;
+    }
+
+    @Provides
+    @Singleton
+    static ProfileApi provideProfileApi(final Retrofit retrofit,
+            final SoPokerPrefs prefs,
+            final ResponseParser responseParser) {
+        return new ProfileApi(retrofit, prefs, responseParser);
+    }
+
+    @Provides
+    @Singleton
+    static LoginApi provideLoginApi(final SoPokerPrefs prefs) {
+        return new LoginApi(prefs);
     }
 
     @Provides

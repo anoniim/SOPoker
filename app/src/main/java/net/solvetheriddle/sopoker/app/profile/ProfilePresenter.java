@@ -9,6 +9,7 @@ import android.support.annotation.NonNull;
 
 import net.solvetheriddle.sopoker.app.profile.data.ProfileRepository;
 import net.solvetheriddle.sopoker.app.schedule.PokeScheduler;
+import net.solvetheriddle.sopoker.app.schedule.PokeUseCase;
 import net.solvetheriddle.sopoker.network.LoginApi;
 import net.solvetheriddle.sopoker.network.model.AccessToken;
 import net.solvetheriddle.sopoker.network.model.Attempt;
@@ -31,17 +32,18 @@ public class ProfilePresenter extends AndroidViewModel implements ProfileScreenC
     private PokeScheduler mPokeScheduler;
 
     private LiveData<List<Attempt>> attemptsList;
+    private PokeUseCase mPokeUseCase;
 
     @Inject
-
-    public ProfilePresenter(final Application application,
+    ProfilePresenter(final Application application,
             final ProfileRepository profileRepository,
             final LoginApi loginApi,
-            final PokeScheduler pokeScheduler) {
+            final PokeScheduler pokeScheduler, final PokeUseCase pokeUseCase) {
         super(application);
         mProfileRepository = profileRepository;
         mLoginApi = loginApi;
         mPokeScheduler = pokeScheduler;
+        mPokeUseCase = pokeUseCase;
 
         attemptsList = mProfileRepository.getAllAttempt();
     }
@@ -58,13 +60,13 @@ public class ProfilePresenter extends AndroidViewModel implements ProfileScreenC
 
     @Override
     public void schedulePoking() {
-//        loadProfile().subscribe(user -> Log.wtf("Marcel", "UPDATED"));
-        mPokeScheduler.schedule();
+        mPokeUseCase.doPoke();
+//        mPokeScheduler.schedule();
     }
 
     @Override
-    public Observable<User> loadProfile() {
-        return mProfileRepository.getNewProfile()
+    public Observable<Attempt> loadProfile() {
+        return mProfileRepository.getNewProfile(true)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());
     }
@@ -88,22 +90,25 @@ public class ProfilePresenter extends AndroidViewModel implements ProfileScreenC
         private ProfileRepository profileRepository;
         private LoginApi mLoginApi;
         private PokeScheduler pokeScheduler;
+        private PokeUseCase pokeUseCase;
 
         public Factory(final Application application,
                 final ProfileRepository profileRepository,
                 final LoginApi loginApi,
-                final PokeScheduler pokeScheduler) {
+                final PokeScheduler pokeScheduler,
+                final PokeUseCase pokeUseCase) {
             this.application = application;
             this.profileRepository = profileRepository;
             this.mLoginApi = loginApi;
             this.pokeScheduler = pokeScheduler;
+            this.pokeUseCase = pokeUseCase;
         }
 
         @SuppressWarnings("unchecked")
         @NonNull
         @Override
         public ProfilePresenter create(@NonNull final Class modelClass) {
-            return new ProfilePresenter(application, profileRepository, mLoginApi, pokeScheduler);
+            return new ProfilePresenter(application, profileRepository, mLoginApi, pokeScheduler, pokeUseCase);
         }
     }
 }

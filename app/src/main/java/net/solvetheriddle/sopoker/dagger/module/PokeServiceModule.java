@@ -23,7 +23,7 @@ public class PokeServiceModule {
     }
 
 //    @Provides
-//    LoginApi provideLoginDao(final SoPokerPrefs prefs) {
+//    LoginApi provideLoginApi(final SoPokerPrefs prefs) {
 //        return new LoginApi(prefs);
 //    }
 

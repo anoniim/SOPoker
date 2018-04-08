@@ -3,5 +3,7 @@
     <color name="colorPrimary">#FFF48024</color>
     <color name="colorPrimaryDark">#FFb9611c</color>
     <color name="colorAccent">#FF0095ff</color>
-    <color name="error">#ffdd</color>
+    <color name="error">#ffbaba</color>
+    <color name="not_needed">@android:color/primary_text_dark</color>
+    <color name="success">#a9c1ff</color>
 </resources>

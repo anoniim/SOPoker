@@ -4,83 +4,70 @@ import android.app.job.JobParameters;
 import android.app.job.JobService;
 import android.util.Log;
 
-import net.solvetheriddle.sopoker.app.profile.data.remote.ProfileApi;
-import net.solvetheriddle.sopoker.network.model.User;
-
-import java.util.Calendar;
-import java.util.Date;
-import java.util.GregorianCalendar;
+import net.solvetheriddle.sopoker.network.model.Attempt;
 
 import javax.inject.Inject;
 
 import dagger.android.AndroidInjection;
-import io.reactivex.Observer;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
-import io.reactivex.schedulers.Schedulers;
 
+import static net.solvetheriddle.sopoker.app.schedule.PokeUseCase.TAG;
 
 public class PokeService extends JobService {
 
-    private static final String TAG = PokeService.class.getCanonicalName();
-
-    @Inject ProfileApi mProfileApi;
+    @Inject PokeUseCase mPokeUseCase;
+    private Disposable pokeJobDisposable;
 
     @Override
     public void onCreate() {
         AndroidInjection.inject(this);
         super.onCreate();
-        Log.i(TAG, "PokeService created");
-
-//        SoPokerApp application = (SoPokerApp) getApplication();
-//        DaggerPokeServiceComponent.builder()
-//                .appComponent(application.getAppComponent())
-//                .pokeServiceModule(new PokeServiceModule(this))
-//                .build()
-//                .inject(this);
+        Log.i(TAG, "PokeService job triggered");
     }
 
     @Override
     public boolean onStartJob(final JobParameters params) {
-        Log.wtf("Marcel", "onStartJob");
-        mProfileApi.getProfile()
-                .subscribeOn(Schedulers.io())
+
+        Log.i(TAG, "Checking if the site has been accessed today");
+        pokeJobDisposable = mPokeUseCase.doPoke()
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Observer<User>() {
-                    @Override
-                    public void onError(final Throwable e) {
-                        Log.wtf("Marcel", "NOPE", e);
-                    }
-
-                    @Override
-                    public void onComplete() {
-                        Log.wtf("Marcel", "AND THAT's IT");
-                    }
-
-                    @Override
-                    public void onSubscribe(final Disposable d) {
-                        Log.wtf("Marcel", "OnSubscribe in PokeService");
-                    }
-
-                    @Override
-                    public void onNext(final User userResponse) {
-                        Log.wtf("Marcel", "YEAH");
-                        final Date now = new Date();
-                        final Calendar calendar = new GregorianCalendar();
-                        calendar.setTime(now);
-                        calendar.roll(Calendar.MINUTE, 30);
-
-                        Log.i(TAG, "JOB TRIGGERED at " + now);
-                        Log.i(TAG, ".. next one should come up at " + calendar.getTime());
-                        jobFinished(params, false);
-                    }
-                });
+                .subscribe(attempt -> {
+                            final int responseStatus = attempt.getStatus();
+                            switch (responseStatus) {
+                                case Attempt.Status.POKE_SUCCESS:
+                                    Log.i(TAG, "One poke closer to Fanatic badge! Nice one!");
+                                    finish(params, false);
+                                    break;
+                                case Attempt.Status.POKE_ERROR:
+                                    reportAndFinish(params, new Throwable("Poke request failed"));
+                                    break;
+                                default:
+                                case Attempt.Status.POKE_NOT_NEEDED:
+                                    Log.d(TAG, "Poke not needed");
+//                                    mPokeUseCase.saveAttempt(attempt);
+                                    finish(params, false);
+                                    break;
+                            }
+                        },
+                        throwable -> reportAndFinish(params, throwable));
         return true;
+    }
+
+    void reportAndFinish(final JobParameters params, final Throwable e) {
+        Log.w(TAG, "Failed to connect to the server, will try again soon", e);
+        finish(params, true);
+    }
+
+    void finish(final JobParameters params, final boolean reschedule) {
+        pokeJobDisposable.dispose();
+        jobFinished(params, reschedule);
     }
 
     @Override
     public boolean onStopJob(final JobParameters params) {
         Log.wtf("Marcel", "onStopJob");
+        pokeJobDisposable.dispose();
         return false;
     }
 }

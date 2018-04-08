@@ -7,7 +7,9 @@ import android.text.TextUtils;
 import net.solvetheriddle.sopoker.app.settings.SoPokerPrefs;
 import net.solvetheriddle.sopoker.network.ResponseParser;
 import net.solvetheriddle.sopoker.network.StackExchangeService;
-import net.solvetheriddle.sopoker.network.model.User;
+import net.solvetheriddle.sopoker.network.model.Attempt;
+
+import java.util.Date;
 
 import javax.inject.Inject;
 
@@ -33,12 +35,21 @@ public class ProfileApi {
     }
 
     @NonNull
-    public Observable<User> getProfile() {
+    public Observable<Attempt> poke(final boolean manual) {
+        Attempt attempt = new Attempt(new Date(), manual);
         String accessToken = mPrefs.getAccessToken();
         if (!TextUtils.isEmpty(accessToken)) {
             return getStackExchangeService()
                     .getProfile(accessToken, API_KEY, SITE)
-                    .map(userResponse -> mResponseParser.parseUser(userResponse));
+                    .map(result -> {
+                        if (result.code() == 200) {
+                            attempt.setStatus(Attempt.Status.POKE_SUCCESS);
+                            attempt.setUser(mResponseParser.parseUser(result.body()));
+                        } else {
+                            attempt.setStatus(Attempt.Status.POKE_ERROR);
+                        }
+                        return attempt;
+                    });
         } else {
             return Observable.error(new IllegalAccessException("Missing access token"));
         }
