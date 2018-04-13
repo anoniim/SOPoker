@@ -9,8 +9,6 @@ import net.solvetheriddle.sopoker.network.ResponseParser;
 import net.solvetheriddle.sopoker.network.StackExchangeService;
 import net.solvetheriddle.sopoker.network.model.Attempt;
 
-import java.util.Date;
-
 import javax.inject.Inject;
 
 import io.reactivex.Observable;
@@ -35,8 +33,7 @@ public class ProfileApi {
     }
 
     @NonNull
-    public Observable<Attempt> poke(final boolean manual) {
-        Attempt attempt = new Attempt(new Date(), manual);
+    public Observable<Attempt> getNewProfile(@NonNull final Attempt attempt) {
         String accessToken = mPrefs.getAccessToken();
         if (!TextUtils.isEmpty(accessToken)) {
             return getStackExchangeService()

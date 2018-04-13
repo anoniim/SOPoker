@@ -14,7 +14,10 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.TextView;
+
+import com.squareup.picasso.Picasso;
 
 import net.solvetheriddle.sopoker.R;
 import net.solvetheriddle.sopoker.app.auth.AuthenticationActivity;
@@ -35,6 +38,7 @@ public class ProfileActivity extends AppCompatActivity {
     public static final int REQUEST_AUTHENTICATE = 100;
 
     @BindView(R.id.toolbar) Toolbar mToolbar;
+    @BindView(R.id.profile_image) ImageView mProfileImage;
     @BindView(R.id.username_text) TextView mUsername;
     @BindView(R.id.reputation_text) TextView mReputationText;
     @BindView(R.id.history_title) TextView mHistoryTitle;
@@ -68,7 +72,7 @@ public class ProfileActivity extends AppCompatActivity {
         mProfilePresenter = ViewModelProviders.of(this, mProfileViewModelFactory)
                 .get(ProfilePresenter.class);
 
-        setObservers();
+        setDataObservers();
 
         mFab.setOnClickListener(view -> mProfilePresenter.schedulePoking());
     }
@@ -122,6 +126,9 @@ public class ProfileActivity extends AppCompatActivity {
     }
 
     private void showProfile(final User profile) {
+        Picasso.with(this)
+                .load(profile.getProfileImage())
+                .into(mProfileImage);
         mUsername.setText(profile.getDisplayName());
         mReputationText.setText(String.format(getString(R.string.reputation),
                 profile.getReputation(),
@@ -140,20 +147,21 @@ public class ProfileActivity extends AppCompatActivity {
         mHistoryView.setLayoutManager(new LinearLayoutManager(this));
     }
 
-    private void setObservers() {
-        mAllAttemptsSubscription = mProfilePresenter.getLatestProfile().subscribe(
-                response -> {
-                    Log.i(TAG, "Profile loaded");
-                    showProfile(response);
-                },
-                throwable -> {
-                    Log.i(TAG, "Profile load failed");
-                    if (throwable instanceof IllegalAccessException) {
-                        showAuthenticationError();
-                    } else {
-                        showError(throwable.getMessage());
-                    }
-                });
+    private void setDataObservers() {
+        mAllAttemptsSubscription = mProfilePresenter.getLatestProfile()
+                .subscribe(
+                        response -> {
+                            Log.i(TAG, "Profile loaded");
+                            showProfile(response);
+                        },
+                        throwable -> {
+                            Log.i(TAG, "Profile load failed");
+                            if (throwable instanceof IllegalAccessException) {
+                                showAuthenticationError();
+                            } else {
+                                showError(throwable.getMessage());
+                            }
+                        });
 
         mProfilePresenter.getAllAttempts()
                 .observe(this, attempts -> {

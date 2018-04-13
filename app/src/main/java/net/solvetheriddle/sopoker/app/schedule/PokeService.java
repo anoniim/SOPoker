@@ -4,19 +4,21 @@ import android.app.job.JobParameters;
 import android.app.job.JobService;
 import android.util.Log;
 
+import net.solvetheriddle.sopoker.domain.PokeController;
 import net.solvetheriddle.sopoker.network.model.Attempt;
 
+import javax.annotation.Nullable;
 import javax.inject.Inject;
 
 import dagger.android.AndroidInjection;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
 
-import static net.solvetheriddle.sopoker.app.schedule.PokeUseCase.TAG;
+import static net.solvetheriddle.sopoker.SoPokerApp.TAG;
 
 public class PokeService extends JobService {
 
-    @Inject PokeUseCase mPokeUseCase;
+    @Inject PokeController mPokeController;
     private Disposable pokeJobDisposable;
 
     @Override
@@ -30,22 +32,21 @@ public class PokeService extends JobService {
     public boolean onStartJob(final JobParameters params) {
 
         Log.i(TAG, "Checking if the site has been accessed today");
-        pokeJobDisposable = mPokeUseCase.doPoke()
+        pokeJobDisposable = mPokeController.doPoke(false)
+                .map(Attempt::getStatus)
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(attempt -> {
-                            final int responseStatus = attempt.getStatus();
+                .subscribe(responseStatus -> {
                             switch (responseStatus) {
                                 case Attempt.Status.POKE_SUCCESS:
                                     Log.i(TAG, "One poke closer to Fanatic badge! Nice one!");
                                     finish(params, false);
                                     break;
                                 case Attempt.Status.POKE_ERROR:
-                                    reportAndFinish(params, new Throwable("Poke request failed"));
+                                    reportAndFinish(params, null);
                                     break;
                                 default:
                                 case Attempt.Status.POKE_NOT_NEEDED:
                                     Log.d(TAG, "Poke not needed");
-//                                    mPokeUseCase.saveAttempt(attempt);
                                     finish(params, false);
                                     break;
                             }
@@ -54,8 +55,9 @@ public class PokeService extends JobService {
         return true;
     }
 
-    void reportAndFinish(final JobParameters params, final Throwable e) {
-        Log.w(TAG, "Failed to connect to the server, will try again soon", e);
+    void reportAndFinish(final JobParameters params, @Nullable final Throwable throwable) {
+        Log.w(TAG, "Poke failed, will try again", throwable);
+        onError();
         finish(params, true);
     }
 
@@ -66,8 +68,14 @@ public class PokeService extends JobService {
 
     @Override
     public boolean onStopJob(final JobParameters params) {
-        Log.wtf("Marcel", "onStopJob");
+        Log.w(TAG, "Poke stopped before it finished, will try again");
+        onError();
         pokeJobDisposable.dispose();
-        return false;
+        // Reschedule
+        return true;
+    }
+
+    private void onError() {
+        // TODO show notification
     }
 }

@@ -7,7 +7,7 @@ import net.solvetheriddle.sopoker.dagger.module.ActivityBindingsModule;
 import net.solvetheriddle.sopoker.dagger.module.AppModule;
 import net.solvetheriddle.sopoker.dagger.module.DataModule;
 import net.solvetheriddle.sopoker.dagger.module.NetworkModule;
-import net.solvetheriddle.sopoker.dagger.module.UseCaseModule;
+import net.solvetheriddle.sopoker.dagger.module.PokeModule;
 
 import javax.inject.Singleton;
 
@@ -18,7 +18,7 @@ import dagger.android.support.AndroidSupportInjectionModule;
 import dagger.android.support.DaggerApplication;
 
 @Singleton
-@Component(modules = {AndroidSupportInjectionModule.class, AppModule.class, DataModule.class, UseCaseModule.class,
+@Component(modules = {AndroidSupportInjectionModule.class, AppModule.class, DataModule.class, PokeModule.class,
         ActivityBindingsModule.class})
 public interface AppComponent extends AndroidInjector<DaggerApplication> {
 

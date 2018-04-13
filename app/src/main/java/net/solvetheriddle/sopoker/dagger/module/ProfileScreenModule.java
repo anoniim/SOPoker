@@ -5,7 +5,7 @@ import android.app.Application;
 import net.solvetheriddle.sopoker.app.profile.ProfilePresenter;
 import net.solvetheriddle.sopoker.app.profile.data.ProfileRepository;
 import net.solvetheriddle.sopoker.app.schedule.PokeScheduler;
-import net.solvetheriddle.sopoker.app.schedule.PokeUseCase;
+import net.solvetheriddle.sopoker.domain.PokeController;
 import net.solvetheriddle.sopoker.network.LoginApi;
 
 import dagger.Module;
@@ -19,7 +19,7 @@ public abstract class ProfileScreenModule {
             final ProfileRepository profileRepository,
             final LoginApi loginApi,
             final PokeScheduler pokeScheduler,
-            final PokeUseCase pokeUseCase) {
-        return new ProfilePresenter.Factory(application, profileRepository, loginApi, pokeScheduler, pokeUseCase);
+            final PokeController pokeController) {
+        return new ProfilePresenter.Factory(application, profileRepository, loginApi, pokeScheduler, pokeController);
     }
 }

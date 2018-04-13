@@ -10,6 +10,8 @@ import dagger.android.support.DaggerApplication;
 
 public class SoPokerApp extends DaggerApplication implements HasActivityInjector {
 
+    public static final String TAG = "StackOverflow Poker";
+
 //    @Inject DispatchingAndroidInjector<Activity> dispatchingActivityInjector;
 
     @Override

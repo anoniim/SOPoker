@@ -6,7 +6,7 @@ import android.arch.persistence.room.RoomDatabase;
 import net.solvetheriddle.sopoker.app.profile.data.local.AttemptDao;
 import net.solvetheriddle.sopoker.network.model.Attempt;
 
-@Database(entities = {Attempt.class}, version = 5)
+@Database(entities = {Attempt.class}, version = 6)
 public abstract class AppDatabase extends RoomDatabase {
 
     public abstract AttemptDao attemptModel();

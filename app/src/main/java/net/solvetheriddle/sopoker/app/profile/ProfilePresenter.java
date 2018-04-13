@@ -9,7 +9,7 @@ import android.support.annotation.NonNull;
 
 import net.solvetheriddle.sopoker.app.profile.data.ProfileRepository;
 import net.solvetheriddle.sopoker.app.schedule.PokeScheduler;
-import net.solvetheriddle.sopoker.app.schedule.PokeUseCase;
+import net.solvetheriddle.sopoker.domain.PokeController;
 import net.solvetheriddle.sopoker.network.LoginApi;
 import net.solvetheriddle.sopoker.network.model.AccessToken;
 import net.solvetheriddle.sopoker.network.model.Attempt;
@@ -32,18 +32,19 @@ public class ProfilePresenter extends AndroidViewModel implements ProfileScreenC
     private PokeScheduler mPokeScheduler;
 
     private LiveData<List<Attempt>> attemptsList;
-    private PokeUseCase mPokeUseCase;
+    private PokeController mPokeController;
 
     @Inject
     ProfilePresenter(final Application application,
             final ProfileRepository profileRepository,
             final LoginApi loginApi,
-            final PokeScheduler pokeScheduler, final PokeUseCase pokeUseCase) {
+            final PokeScheduler pokeScheduler,
+            final PokeController pokeController) {
         super(application);
         mProfileRepository = profileRepository;
         mLoginApi = loginApi;
         mPokeScheduler = pokeScheduler;
-        mPokeUseCase = pokeUseCase;
+        mPokeController = pokeController;
 
         attemptsList = mProfileRepository.getAllAttempt();
     }
@@ -60,13 +61,13 @@ public class ProfilePresenter extends AndroidViewModel implements ProfileScreenC
 
     @Override
     public void schedulePoking() {
-        mPokeUseCase.doPoke();
+        mPokeController.doPoke(true).subscribe();
 //        mPokeScheduler.schedule();
     }
 
     @Override
     public Observable<Attempt> loadProfile() {
-        return mProfileRepository.getNewProfile(true)
+        return mProfileRepository.poke(true)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());
     }
@@ -90,25 +91,25 @@ public class ProfilePresenter extends AndroidViewModel implements ProfileScreenC
         private ProfileRepository profileRepository;
         private LoginApi mLoginApi;
         private PokeScheduler pokeScheduler;
-        private PokeUseCase pokeUseCase;
+        private PokeController mPokeController;
 
         public Factory(final Application application,
                 final ProfileRepository profileRepository,
                 final LoginApi loginApi,
                 final PokeScheduler pokeScheduler,
-                final PokeUseCase pokeUseCase) {
+                final PokeController pokeController) {
             this.application = application;
             this.profileRepository = profileRepository;
             this.mLoginApi = loginApi;
             this.pokeScheduler = pokeScheduler;
-            this.pokeUseCase = pokeUseCase;
+            this.mPokeController = pokeController;
         }
 
         @SuppressWarnings("unchecked")
         @NonNull
         @Override
         public ProfilePresenter create(@NonNull final Class modelClass) {
-            return new ProfilePresenter(application, profileRepository, mLoginApi, pokeScheduler, pokeUseCase);
+            return new ProfilePresenter(application, profileRepository, mLoginApi, pokeScheduler, mPokeController);
         }
     }
 }
